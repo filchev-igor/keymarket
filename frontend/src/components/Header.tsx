@@ -1,7 +1,26 @@
 import { useState, type FormEvent } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth'
 import { useCart } from '../cart'
+
+function SearchIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" />
+    </svg>
+  )
+}
+
+function CartIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h8.7a1 1 0 0 0 1-.8L20 8H6.2" />
+      <circle cx="9.5" cy="20" r="1.3" />
+      <circle cx="17" cy="20" r="1.3" />
+    </svg>
+  )
+}
 
 export default function Header() {
   const { user, logout } = useAuth()
@@ -20,8 +39,10 @@ export default function Header() {
   return (
     <header className="header">
       <div className="container header-inner">
-        <Link to="/" className="logo">
-          key<span>market</span>
+        {/* Placeholder wordmark: our own, not Eneba's logo */}
+        <Link to="/" className="logo" aria-label="keymarket home">
+          <span className="logo-mark">k</span>
+          <span>key<b>market</b></span>
         </Link>
 
         <form className="search" onSubmit={search} role="search">
@@ -32,27 +53,27 @@ export default function Header() {
             placeholder="Search games, e.g. cyber drift"
             aria-label="Search games"
           />
-          <button type="submit">Search</button>
+          <button type="submit" aria-label="Search">
+            <SearchIcon />
+          </button>
         </form>
 
         <nav className="nav">
-          <Link to="/store">Store</Link>
-          <Link to="/cart" className="cart-link">
-            Cart{count > 0 && <span className="badge">{count}</span>}
+          <NavLink to="/store">Store</NavLink>
+          {user && <NavLink to="/orders">My orders</NavLink>}
+          <Link to="/cart" className="icon-link" aria-label={`Cart, ${count} items`}>
+            <CartIcon />
+            {count > 0 && <span className="badge">{count}</span>}
           </Link>
           {user ? (
-            <>
-              <Link to="/orders">My orders</Link>
-              <button className="link-button" onClick={() => logout().then(() => navigate('/'))}>
-                Sign out ({user.name})
-              </button>
-            </>
+            <button className="user-chip" onClick={() => logout().then(() => navigate('/'))} title="Sign out">
+              <span className="avatar">{user.name.charAt(0).toUpperCase()}</span>
+              <span className="user-name">Sign out</span>
+            </button>
           ) : (
             <>
-              <Link to="/login">Sign in</Link>
-              <Link to="/register" className="btn btn-small">
-                Register
-              </Link>
+              <Link to="/login" className="signin">Sign in</Link>
+              <Link to="/register" className="btn btn-small">Register</Link>
             </>
           )}
         </nav>
