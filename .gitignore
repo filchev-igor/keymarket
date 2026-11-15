@@ -1,0 +1,31 @@
+@'
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Claude Code local files
+.claude/
+
+# Secrets and env files (keep only .env.example)
+.env
+.env.*
+!.env.example
+
+# Dependencies and build output
+node_modules/
+vendor/
+dist/
+build/
+
+# Laravel runtime
+backend/storage/*.key
+backend/storage/logs/
+backend/bootstrap/cache/*.php
+
+# Logs, exports, OS files
+*.log
+export/
+.DS_Store
+Thumbs.db
+'@ | Set-Content -Path .gitignore -Encoding utf8
