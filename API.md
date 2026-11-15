@@ -140,6 +140,7 @@ Body: `{ "items": [ { "offer_id": 10, "quantity": 2 } ] }`
 }
 ```
 `available` is `false` if the offer is gone or has less stock than `quantity` (that line is excluded from `total`).
+If the offer no longer exists, the line has `unit_price: null`, `line_total: 0`, `product: null` and `seller: null`.
 
 ## Checkout and orders
 
