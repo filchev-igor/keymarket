@@ -60,7 +60,7 @@ class CatalogController extends Controller
             $query->where(function ($w) use ($like, $term) {
                 $w->where('products.name', 'ilike', $like)
                     ->orWhereRaw('similarity(products.name, ?) > 0.25', [$term])
-                    ->orWhereRaw('word_similarity(?, products.name) > 0.4', [$term]);
+                    ->orWhereRaw('word_similarity(?, products.name) > 0.5', [$term]);
             });
         }
 
