@@ -10,7 +10,7 @@ A small game-key marketplace in the style of Eneba, built as an internship assig
 - API: https://keymarket-api-d5bt.onrender.com (`/api/health`)
 - Demo account: `demo@keymarket.test` / `demo1234` (or register your own)
 
-The API runs on Render's **free tier, which sleeps after about 15 minutes without traffic**. The first request after that can take 30-60 seconds; open the health URL once to wake it up.
+The API runs on Render's **free tier, which sleeps after about 15 minutes without traffic**. The first request after that can take up to a minute; open the health URL once to wake it up.
 
 Payment is **simulated and no real money is involved**: any 12-19 digit card number is accepted, except one ending in `0002`, which is declined to show the failure path.
 
@@ -80,7 +80,7 @@ cp .env.testing.example .env.testing   # fill in a SEPARATE Postgres database (a
 php artisan test
 ```
 
-65 backend tests (Laravel feature tests plus unit tests of the safety guard). They run on **Postgres, not SQLite**, because search uses `pg_trgm` and checkout uses `FOR UPDATE SKIP LOCKED`.
+66 backend tests (Laravel feature tests plus unit tests of the safety guard). They run on **Postgres, not SQLite**, because search uses `pg_trgm` and checkout uses `FOR UPDATE SKIP LOCKED`.
 
 **Safety:** the feature tests use `RefreshDatabase`, which wipes the database it runs on. `tests/Support/ProductionDatabaseGuard.php` runs before any test touches a database and refuses to start if `.env.testing` is missing (Laravel would silently fall back to the production `.env`), if the test database is the same Supabase project as the one in `backend/.env` (compared by project ref, because two projects in one region share a pooler host), or if SQLite or `DB_URL` is used. The guard has its own tests, and I checked it by pointing the environment at the production identity and by hiding `.env.testing`: both runs were refused before any database access.
 
@@ -106,6 +106,20 @@ Deliberately **not** tested, and why:
 - Game covers are generated gradients, not images.
 - The API runs on PHP's built-in server inside Docker, which is enough for a free-tier demo.
 - The Eneba look is an approximation: no cashback, wishlist, language switcher or payment-logo strip (those features do not exist here; the teal tag on cards shows the real discount), and the filter sidebar selects one value per group because the API accepts one.
+
+## What I would add next
+
+- **TanStack Query** for server data: caching, request de-duplication and retries, replacing the small hand-written `useFetch` hook.
+- **ESLint and Prettier** for the frontend, with the rules enforced in CI (only the template's `oxlint` runs today).
+- **Laravel Pint** to keep the PHP code style consistent automatically.
+- **GitHub Actions CI** that runs the backend tests, the frontend type-check and the production build on every pull request.
+- **A search suggestions dropdown** under the header search box, on top of the existing typo-tolerant search.
+
+## Process
+
+- **Preparation:** the planning, the environment setup and the project rules in [`CLAUDE.md`](CLAUDE.md) were prepared in a separate Claude chat, before any code was written.
+- **Code:** all the code was written by Claude Code in numbered branches, `K-1` to `K-9`, each merged into `main` through a pull request (squash and merge; the branches are kept so the history stays visible). `K-6` was used by two branches (`K-6-cleanup` and `K-6-eneba-styling`) before the automatic branch-numbering rule was added to `CLAUDE.md`; that rule prevents it from happening again.
+- **Log:** the full Claude Code log, prompts and responses, is in [`docs/ai-log.md`](docs/ai-log.md).
 
 ## Privacy note
 
