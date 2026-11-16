@@ -59,6 +59,9 @@
   --search-h: 55px;
   --search-w: 530px;
   --cart-icon: 24px;        /* header cart */
+  --account-icon: 24px;     /* person icon before "Log in" */
+  --account-icon-gap: 8px;  /* between that icon and its label */
+  --account-gap: 10px;      /* around the "|" separator */
   --sort-icon: 20px;        /* store sort control icon */
   --sort-gap: 10px;         /* space between the sort icon, its label and the chevron */
   --search-icon: 24px;      /* magnifier */
@@ -214,8 +217,12 @@ label { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; fo
 .icon-link:hover { text-decoration: none; color: var(--yellow); }
 .cart-icon { width: var(--cart-icon); height: var(--cart-icon); }
 .badge { position: absolute; top: 0; right: -2px; background: var(--red); color: #fff; border-radius: 999px; min-width: 18px; padding: 0 5px; text-align: center; font-size: 11px; font-weight: 800; line-height: 18px; }
-.account { display: flex; align-items: center; }
-.account > * + * { margin-left: 12px; padding-left: 12px; border-left: 1px solid var(--text-3); line-height: 1; }
+/* Signed-out account links: person icon + "Log in", a "|" separator, "Register" (icon only on phones) */
+.account { display: flex; align-items: center; gap: var(--account-gap); }
+.account-link { display: inline-flex; align-items: center; gap: var(--account-icon-gap); }
+.account-link:hover { text-decoration: none; color: var(--yellow); }
+.account-icon { width: var(--account-icon); height: var(--account-icon); flex-shrink: 0; }
+.account-sep { color: var(--text-3); font-weight: 600; }
 .user-chip { display: flex; align-items: center; gap: 8px; background: none; border: 0; color: var(--text); cursor: pointer; font: inherit; font-weight: 800; padding: 0; }
 .avatar { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--teal); color: var(--on-teal); font-weight: 800; font-size: var(--fs-ui); }
 
@@ -457,6 +464,8 @@ a.cart-line:hover { text-decoration: none; outline: 1px solid var(--teal); }
   .search { order: 3; flex: 1 1 100%; }
   .nav { gap: 10px; }
   .currency, .user-name, .nav-text { display: none; }
+  /* Phones: just the person icon (the login page links to "Create an account") */
+  .account-text, .account-sep, .account-register { display: none; }
   .icon-link { width: 34px; }
   .pdp-head { grid-template-columns: 110px minmax(0, 1fr); gap: 14px; }
   .pdp-head .cover-title { font-size: var(--fs-small); padding-bottom: 0; }

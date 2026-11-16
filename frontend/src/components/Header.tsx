@@ -15,6 +15,16 @@ function SearchIcon() {
   )
 }
 
+/** Person outline (head and shoulders) drawn for this project; its size comes from --account-icon. */
+function UserIcon() {
+  return (
+    <svg className="account-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="7.5" r="4.5" />
+      <path d="M3.5 21.5c0-4.7 3.8-8.5 8.5-8.5s8.5 3.8 8.5 8.5" />
+    </svg>
+  )
+}
+
 /** Small cross for the "clear search text" button; its size comes from --search-clear-icon. */
 function ClearIcon() {
   return (
@@ -113,8 +123,12 @@ export default function Header() {
           ) : (
             // Plain text links separated by a thin divider, like the reference (no coloured button)
             <span className="account">
-              <Link to="/login">Log in</Link>
-              <Link to="/register">Register</Link>
+              <Link to="/login" className="account-link" aria-label="Log in">
+                <UserIcon />
+                <span className="account-text">Log in</span>
+              </Link>
+              <span className="account-sep" aria-hidden="true">|</span>
+              <Link to="/register" className="account-register">Register</Link>
             </span>
           )}
         </nav>
