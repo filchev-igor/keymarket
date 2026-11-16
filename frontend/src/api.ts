@@ -65,22 +65,25 @@ export const api = async <T>(
 
 /** Loads a GET endpoint when the component mounts or the path changes. */
 export const useFetch = <T>(path: string) => {
-  const [state, setState] = useState<{ data: T | null; error: string | null; loading: boolean }>({
-    data: null,
-    error: null,
-    loading: true,
-  })
+  // Each result remembers the path it belongs to, so "loading" is derived (a result for another path means
+  // loading) and no state has to be set synchronously inside the effect.
+  const [result, setResult] = useState<{
+    path: string
+    data: T | null
+    error: string | null
+  } | null>(null)
 
   useEffect(() => {
     let cancelled = false
-    setState((s) => ({ ...s, loading: true, error: null }))
     api<T>(path)
-      .then((data) => !cancelled && setState({ data, error: null, loading: false }))
-      .catch((e: Error) => !cancelled && setState({ data: null, error: e.message, loading: false }))
+      .then((data) => !cancelled && setResult({ path, data, error: null }))
+      .catch((e: Error) => !cancelled && setResult({ path, data: null, error: e.message }))
     return () => {
       cancelled = true
     }
   }, [path])
 
-  return state
+  const ready = result !== null && result.path === path
+  // While another path loads, the previous data stays on screen and the error is cleared, as before.
+  return { data: result?.data ?? null, error: ready ? result.error : null, loading: !ready }
 }

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useFetch } from '../api'
-import Icon, { platformIcon } from '../components/Icon'
+import Icon from '../components/Icon'
+import { platformIcon } from '../components/platformIcon'
 import ProductCard from '../components/ProductCard'
 import Status from '../components/Status'
 import type { Banner, Filters, Product } from '../types'

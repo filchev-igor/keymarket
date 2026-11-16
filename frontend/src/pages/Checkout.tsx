@@ -7,7 +7,7 @@ import Spinner from '../components/Spinner'
 import Stepper from '../components/Stepper'
 import { formatPrice } from '../format'
 import type { Order } from '../types'
-import { useCartPreview } from './Cart'
+import { useCartPreview } from '../useCartPreview'
 
 const APPROVED_CARD = '4242424242424242'
 const DECLINED_CARD = '4000000000000002' // ends in 0002: the simulated payment declines it

@@ -1,37 +1,10 @@
-import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { api } from '../api'
 import { useCart } from '../cart'
 import { Cover } from '../components/ProductCard'
 import Spinner from '../components/Spinner'
 import Stepper from '../components/Stepper'
 import { formatPrice } from '../format'
-import type { CartPreview } from '../types'
-
-/** Loads current prices and availability for the cart from the server. */
-export const useCartPreview = () => {
-  const { items } = useCart()
-  const [preview, setPreview] = useState<CartPreview | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const key = JSON.stringify(items)
-
-  useEffect(() => {
-    if (items.length === 0) {
-      setPreview(null)
-      return
-    }
-    let cancelled = false
-    api<CartPreview>('/cart/preview', { method: 'POST', body: { items } })
-      .then((p) => !cancelled && setPreview(p))
-      .catch((e: Error) => !cancelled && setError(e.message))
-    return () => {
-      cancelled = true
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- `key` is the serialised `items`
-  }, [key])
-
-  return { preview, error }
-}
+import { useCartPreview } from '../useCartPreview'
 
 const Cart = () => {
   const cart = useCart()

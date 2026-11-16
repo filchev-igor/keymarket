@@ -18,8 +18,12 @@ export default defineConfig([
     plugins: { react, 'react-refresh': reactRefresh },
     settings: { react: { version: 'detect' } },
     rules: {
-      // Fast refresh only works when a file exports components (constants are fine).
-      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      // Fast refresh only works when a file exports components (constants are fine). The two context hooks stay
+      // next to their providers on purpose: they share one context object.
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true, allowExportNames: ['useAuth', 'useCart'] },
+      ],
       // Components, hooks and helpers are arrow functions: `export const Name = () => { ... }`.
       'react/function-component-definition': [
         'error',
