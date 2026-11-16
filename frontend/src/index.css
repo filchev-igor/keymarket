@@ -298,15 +298,17 @@ label { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; fo
 .old-price { color: var(--muted); text-decoration: line-through; font-size: var(--fs-ui); font-weight: 600; }
 .save { color: var(--green); font-size: var(--fs-small); font-weight: 800; }
 
-/* Hover actions (mouse and keyboard only): a dark scrim over the WHOLE card, so the image and all its text sit
-   underneath it, shadowed, with a yellow Add to cart button and a View offers link centered on top. It is exactly
-   the card's own size, so nothing around the card is covered and the layout never moves. The scrim lets clicks
-   through to the card link underneath; only the button and the link catch them. */
-.card-hover { display: none; position: absolute; top: 0; right: 0; bottom: 0; left: 0; flex-direction: column; justify-content: center; align-items: stretch; gap: 12px; padding: 0 var(--card-pad); background: var(--hover-scrim); pointer-events: none; }
-.card-hover > * { pointer-events: auto; }
+/* Hover actions (mouse and keyboard only), built like the "image text blocks" pattern: the card is the positioned
+   container (position: relative), .card-hover is a dark layer over the WHOLE card (image and all its text sit under
+   it, shadowed), and .card-hover-content is the block centered on it with top/left 50% and translate(-50%, -50%).
+   The layer is exactly the card's size, so nothing around the card is covered and the layout never moves. Clicks pass
+   through the layer to the card link underneath; only the button and the link catch them. */
+.card-hover { display: none; position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: var(--hover-scrim); pointer-events: none; }
+.card-hover-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: calc(100% - 2 * var(--card-pad)); display: flex; flex-direction: column; gap: 12px; text-align: center; }
+.card-hover-content > * { pointer-events: auto; }
 .view-offers { color: var(--link); font-size: var(--fs-ui); font-weight: 800; text-align: center; }
 @media (hover: hover) {
-  .card:hover .card-hover, .card:focus-within .card-hover { display: flex; }
+  .card:hover .card-hover, .card:focus-within .card-hover { display: block; }
 }
 
 /* Loading indicator (see components/Spinner.tsx): one rotation per second, linear, forever */

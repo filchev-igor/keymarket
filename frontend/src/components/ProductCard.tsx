@@ -77,12 +77,14 @@ const ProductCard = ({ product }: { product: Product }) => {
       {/* Shown on hover or keyboard focus (devices with a mouse); touch users open the card instead */}
       {product.best_offer_id !== null && (
         <div className="card-hover">
-          <button type="button" className="btn btn-block" onClick={add}>
-            {added ? 'Added ✓' : 'Add to cart'}
-          </button>
-          <Link to={url} className="view-offers">
-            View offers
-          </Link>
+          <div className="card-hover-content">
+            <button type="button" className="btn btn-block" onClick={add}>
+              {added ? 'Added ✓' : 'Add to cart'}
+            </button>
+            <Link to={url} className="view-offers">
+              View offers
+            </Link>
+          </div>
         </div>
       )}
     </div>
