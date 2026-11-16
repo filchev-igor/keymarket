@@ -17,6 +17,7 @@
   --field-bg: rgba(0, 0, 0, 0.2); /* inputs */
   --field-shadow: inset 0 1px 3px #1f0a4d;
   --search-bg: rgba(0, 0, 0, 0.25);
+  --search-border: #fff;    /* header search box border: solid white */
   --border: rgba(255, 255, 255, 0.25);
   --divider: rgba(255, 255, 255, 0.15);
   --footer-bg: #1f0a4d;
@@ -190,7 +191,7 @@ label { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; fo
 /* Placeholder wordmark: our own shape, not the reference logo */
 .logo-mark { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50% 50% 50% 8px; background: linear-gradient(135deg, var(--yellow), var(--teal)); color: var(--on-teal); font-size: 21px; font-weight: 800; letter-spacing: 0; }
 
-.search { display: flex; flex: 0 1 var(--search-w); position: relative; background: var(--search-bg); border: 1px solid var(--border); }
+.search { display: flex; flex: 0 1 var(--search-w); position: relative; background: var(--search-bg); border: 1px solid var(--search-border); }
 .search input { height: var(--search-h); padding: 0 var(--search-clear-w) 0 var(--search-pad-left); background: transparent; box-shadow: none; border-radius: 0; font-size: var(--fs-search); font-weight: 800; }
 /* One clear button only: hide the browser's own cancel cross in search fields */
 .search input::-webkit-search-cancel-button, .search input::-webkit-search-decoration { -webkit-appearance: none; appearance: none; display: none; }
