@@ -87,10 +87,11 @@ Must include: how to run locally, architecture and data model overview, what was
 7. Remind me what to send to internship@eneba.com: my full name, the GitHub link(s), the public URL, the chat history file (or link), and my CV in English.
 
 ## When to run checks
-- Between commits: do not run the full test suite or builds. Fast feedback comes from the dev server.
-- Before opening a PR: run the frontend type-check and production build; run the backend test suite only if backend code changed.
-- Before merging: re-run whatever the latest changes affect. Never merge with a failing check.
-- After merging: tell me to confirm the Vercel and Render deploys and a quick live check.
+- Do not run the backend test suite at any point unless I write "final check". It takes about 5 minutes.
+- Frontend: run the type-check and production build once before opening a PR, never between commits.
+- If you change anything under backend/, say so clearly in the PR description and ask me before merging, so I can decide whether to run the tests.
+- When I write "final check": run once from scratch the full backend test suite plus the frontend type-check and build, and report the result.
+- After merging, tell me to confirm the Vercel and Render deploys and a quick live check.
 
 ## Design references
 - Do not read or take screenshots unless the user asks. Use the .md files in design/ instead.
