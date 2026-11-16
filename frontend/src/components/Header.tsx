@@ -15,12 +15,11 @@ function SearchIcon() {
   )
 }
 
-/** Person outline (head and shoulders) drawn for this project; its size comes from --account-icon. */
+/** Person icon (supplied artwork, filled, 24x25 grid); its width comes from --account-icon and its height follows. */
 function UserIcon() {
   return (
-    <svg className="account-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <circle cx="12" cy="7.5" r="4.5" />
-      <path d="M3.5 21.5c0-4.7 3.8-8.5 8.5-8.5s8.5 3.8 8.5 8.5" />
+    <svg className="account-icon" fill="none" viewBox="0 0 24 25" aria-hidden="true">
+      <path fill="currentColor" fillRule="evenodd" d="M11.667 1.75a5.417 5.417 0 1 0 0 10.834 5.417 5.417 0 0 0 0-10.834Zm-2.77 2.647a3.917 3.917 0 1 1 5.54 5.54 3.917 3.917 0 0 1-5.54-5.54ZM6.07 16.902A7.917 7.917 0 0 1 19.583 22.5a.75.75 0 0 0 1.5 0 9.417 9.417 0 1 0-18.833 0 .75.75 0 0 0 1.5 0c0-2.1.834-4.113 2.319-5.598Z" clipRule="evenodd" />
     </svg>
   )
 }
@@ -135,7 +134,8 @@ export default function Header() {
       </div>
 
       <div className="subnav">
-        <div className="container subnav-inner">
+        {/* A navigation landmark; on phones it is a swipeable strip (see the mobile rules in index.css) */}
+        <nav className="container subnav-inner" aria-label="Browse the store">
           <Link to="/store">All games</Link>
           <Link to="/store?sort=popularity">Best sellers</Link>
           <Link to="/store?sort=discount">Hot deals</Link>
@@ -143,7 +143,7 @@ export default function Header() {
           {filters.data?.platforms.map((p) => (
             <Link key={p} to={`/store?platform=${encodeURIComponent(p)}`}>{p}</Link>
           ))}
-        </div>
+        </nav>
       </div>
     </header>
   )

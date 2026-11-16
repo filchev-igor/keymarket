@@ -108,6 +108,8 @@
   --fs-pill: 14px;            /* 14/600 pills (selected filters) */
   --fs-results: 14px;         /* "Results found: N" */
   --nav-gap: 30px;            /* space between navigation row links */
+  --nav-tap: 12px;            /* horizontal padding that makes each nav link easy to tap (phones) */
+  --nav-fade: 16px;           /* soft fade at both ends of the swipeable nav strip (phones) */
   --info-icon: 26px;          /* icons of the product page info rows */
   --fs-button: 15px;  /* 15/800 buttons */
   --fs-search: 19px;  /* 19/800 search text */
@@ -223,7 +225,7 @@ label { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; fo
 .account { display: flex; align-items: center; gap: var(--account-gap); }
 .account-link { display: inline-flex; align-items: center; gap: var(--account-icon-gap); }
 .account-link:hover { text-decoration: none; color: var(--yellow); }
-.account-icon { width: var(--account-icon); height: var(--account-icon); flex-shrink: 0; }
+.account-icon { width: var(--account-icon); height: auto; flex-shrink: 0; }
 .account-sep { color: var(--text-3); font-weight: 600; }
 .user-chip { display: flex; align-items: center; gap: 8px; background: none; border: 0; color: var(--text); cursor: pointer; font: inherit; font-weight: 800; padding: 0; }
 .avatar { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--teal); color: var(--on-teal); font-weight: 800; font-size: var(--fs-ui); }
@@ -469,7 +471,7 @@ a.cart-line:hover { text-decoration: none; outline: 1px solid var(--teal); }
 @media (max-width: 760px) {
   :root {
     --gutter: 16px; --fs-title: 24px; --header-row: 60px; --nav-row: 44px; --search-h: 44px; --fs-search: 16px; --gap: 14px;
-    --fs-home-title: 24px; --heading-gap: 20px; --section-gap: 32px; --fs-product-title: 20px; --fs-sort: 14px; --nav-gap: 20px;
+    --fs-home-title: 24px; --heading-gap: 20px; --section-gap: 32px; --fs-product-title: 20px; --fs-sort: 14px; --nav-gap: 0px; --fs-nav: 15px;
   }
   .offer { padding: 14px; }
   .header-inner { flex-wrap: wrap; gap: 8px 10px; padding-block: 8px; }
@@ -481,6 +483,18 @@ a.cart-line:hover { text-decoration: none; outline: 1px solid var(--teal); }
   /* Phones: just the person icon (the login page links to "Create an account") */
   .account-text, .account-sep, .account-register { display: none; }
   .icon-link { width: 34px; }
+  /* Category row on phones: a swipeable strip with soft edge fades (the hint that there is more),
+     snap points, momentum scrolling and tap-sized links (44px high, 12px either side of the text) */
+  .subnav-inner {
+    padding-inline: calc(var(--gutter) - var(--nav-tap)); /* the first label lines up with the page gutter */
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: var(--gutter);
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--nav-fade), #000 calc(100% - var(--nav-fade)), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 var(--nav-fade), #000 calc(100% - var(--nav-fade)), transparent);
+  }
+  .subnav a { display: inline-flex; align-items: center; height: 100%; padding: 0 var(--nav-tap); flex: 0 0 auto; scroll-snap-align: start; }
   .pdp-head { grid-template-columns: 110px minmax(0, 1fr); gap: 14px; }
   .pdp-head .cover-title { font-size: var(--fs-small); padding-bottom: 0; }
   .offer { grid-template-columns: minmax(0, 1fr) auto; }
