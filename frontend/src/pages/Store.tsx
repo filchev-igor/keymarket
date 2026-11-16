@@ -5,14 +5,24 @@ import ProductCard from '../components/ProductCard'
 import Status from '../components/Status'
 import type { Filters, Paginated, Product } from '../types'
 
-const SORTS = [
-  ['', 'Default'],
-  ['price_asc', 'Price: low to high'],
-  ['price_desc', 'Price: high to low'],
-  ['discount', 'Biggest discount'],
-  ['popularity', 'Most popular'],
-  ['name', 'Name A-Z'],
+// Labels read "Sort: value", like the reference. With a search term the default order is relevance.
+const OTHER_SORTS: [string, string][] = [
+  ['price_asc', 'Price: Low to high'],
+  ['price_desc', 'Price: High to low'],
+  ['discount', 'Discount: Biggest first'],
+  ['name', 'Name: A to Z'],
 ]
+const SORTS_BROWSING: [string, string][] = [['', 'Popularity: Most popular'], ...OTHER_SORTS]
+const SORTS_SEARCHING: [string, string][] = [['', 'Relevance: Best match'], ['popularity', 'Popularity: Most popular'], ...OTHER_SORTS]
+
+/** Small sort icon (two arrows) drawn for this project. */
+function SortIcon() {
+  return (
+    <svg className="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M7 4v16M7 4 3.5 7.5M7 4l3.5 3.5M17 20V4M17 20l-3.5-3.5M17 20l3.5-3.5" />
+    </svg>
+  )
+}
 
 /** [1, '…', 4, 5, 6, '…', 20]: always the first and last page and the neighbours of the current one. */
 function pageList(page: number, last: number): (number | '…')[] {
@@ -164,10 +174,9 @@ export default function Store() {
               {meta && <span className="muted small">{meta.total} products</span>}
             </div>
             <label className="sort">
-              Sort by
-              <select value={params.get('sort') ?? ''} onChange={(e) => update({ sort: e.target.value })}>
-                {q && <option value="">Best match</option>}
-                {SORTS.filter(([v]) => v || !q).map(([v, label]) => (
+              <SortIcon />
+              <select aria-label="Sort by" value={params.get('sort') ?? ''} onChange={(e) => update({ sort: e.target.value })}>
+                {(q ? SORTS_SEARCHING : SORTS_BROWSING).map(([v, label]) => (
                   <option key={v} value={v}>{label}</option>
                 ))}
               </select>

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useFetch } from '../api'
+import CategoryIcon, { type IconName } from '../components/CategoryIcon'
 import ProductCard from '../components/ProductCard'
 import Status from '../components/Status'
 import type { Banner, Filters, Product } from '../types'
@@ -21,16 +22,36 @@ function Banners() {
   )
 }
 
-/** Quick links built from the catalog's own platforms. */
-function PlatformChips() {
+/** Which of our own icons stands for a platform (generic shapes, not the platforms' logos). */
+function platformIcon(platform: string): IconName {
+  if (/steam|epic|pc/i.test(platform)) return 'monitor'
+  if (/nintendo/i.test(platform)) return 'handheld'
+  return 'gamepad'
+}
+
+const SHORTCUTS: { label: string; to: string; icon: IconName }[] = [
+  { label: 'All games', to: '/store', icon: 'grid' },
+  { label: 'Best sellers', to: '/store?sort=popularity', icon: 'flame' },
+  { label: 'Hot deals', to: '/store?sort=discount', icon: 'tag' },
+  { label: 'Cheap games', to: '/store?sort=price_asc', icon: 'coins' },
+]
+
+/** Horizontal category strip under the hero: a few shortcuts, then one entry per platform from the catalog. */
+function CategoryStrip() {
   const { data } = useFetch<Filters>('/filters')
-  if (!data) return null
+  const items = [
+    ...SHORTCUTS,
+    ...(data?.platforms ?? []).map((p) => ({ label: p, to: `/store?platform=${encodeURIComponent(p)}`, icon: platformIcon(p) })),
+  ]
   return (
-    <section className="chips-row" aria-label="Browse by platform">
-      {data.platforms.map((p) => (
-        <Link key={p} to={`/store?platform=${encodeURIComponent(p)}`} className="pill">{p}</Link>
+    <nav className="category-strip" aria-label="Browse categories">
+      {items.map((item) => (
+        <Link key={item.label} to={item.to} className="category">
+          <span className="category-icon"><CategoryIcon name={item.icon} /></span>
+          <span>{item.label}</span>
+        </Link>
       ))}
-    </section>
+    </nav>
   )
 }
 
@@ -38,14 +59,14 @@ function ProductBlock({ title, path, more }: { title: string; path: string; more
   const { data, loading, error } = useFetch<{ data: Product[] }>(path)
   return (
     <section>
-      <div className="section-head">
+      <div className="section-head section-title">
         <h2>{title}</h2>
       </div>
       <Status loading={loading} error={error} />
       <div className="row-scroll">{data?.data.map((p) => <ProductCard key={p.id} product={p} />)}</div>
       {data && data.data.length > 0 && (
         <div className="show-all">
-          <Link to={more} className="btn btn-outline">Show all</Link>
+          <Link to={more} className="btn">Show all</Link>
         </div>
       )}
     </section>
@@ -57,7 +78,7 @@ function Genres() {
   if (!data) return null
   return (
     <section>
-      <div className="section-head">
+      <div className="section-head section-title">
         <h2>Browse by genre</h2>
       </div>
       <div className="tiles">
@@ -73,7 +94,7 @@ export default function Home() {
   return (
     <div className="container stack">
       <Banners />
-      <PlatformChips />
+      <CategoryStrip />
       <ProductBlock title="Best sellers" path="/home/best-sellers" more="/store?sort=popularity" />
       <ProductBlock title="Hot deals" path="/home/deals" more="/store?sort=discount" />
       <Genres />

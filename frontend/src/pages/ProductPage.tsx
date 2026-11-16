@@ -53,7 +53,7 @@ export default function ProductPage() {
         <strong className="price">{formatPrice(offer.price)}</strong>
       </div>
       <div className="actions">
-        <button className="btn btn-small" onClick={() => add(offer)}>
+        <button className="btn" onClick={() => add(offer)}>
           {added === offer.id ? 'Added ✓' : 'Add to cart'}
         </button>
       </div>
