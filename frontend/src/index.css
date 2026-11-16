@@ -92,6 +92,8 @@
 
   /* Type scale (size / weight). Montserrat runs larger than the reference font, so body sizes are 1px smaller. */
   --font: 'Montserrat Variable', 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+  --font-ui: 'Montserrat Variable', Arial, Helvetica, sans-serif; /* the reference stack; Montserrat stands in for Metropolis */
+  --fs-account: 14px;         /* Log in / Register / Sign out */
   --fs-title: 30px;   /* page title, 30/700 on desktop (24 on phones) */
   --fs-section: 20px; /* 20/800 section heading */
   --fs-panel: 15px;   /* body text and panel titles */
@@ -215,7 +217,12 @@ label { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; fo
 .search-icon { width: var(--search-icon); height: var(--search-icon); }
 .search-clear-icon { width: var(--search-clear-icon); height: var(--search-clear-icon); }
 
-.nav { display: flex; align-items: center; gap: 22px; margin-left: auto; font-size: 15px; font-weight: 800; }
+/* Account links (Log in, Register, Sign out, My orders): the reference's font settings at 14px */
+.nav {
+  display: flex; align-items: center; gap: 22px; margin-left: auto;
+  font-family: var(--font-ui); font-size: var(--fs-account); font-weight: 800;
+  font-feature-settings: normal; font-kerning: auto; font-language-override: normal; font-optical-sizing: auto;
+}
 .currency { color: var(--muted); font-weight: 800; }
 .icon-link { position: relative; display: grid; place-items: center; width: 40px; height: 40px; }
 .icon-link:hover { text-decoration: none; color: var(--yellow); }
