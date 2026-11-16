@@ -106,7 +106,6 @@ export default function Header() {
         </form>
 
         <nav className="nav">
-          <span className="currency">EUR</span>
           <Link to="/cart" className="icon-link" aria-label={`Cart, ${count} items`}>
             <CartIcon />
             {count > 0 && <span className="badge">{count}</span>}
