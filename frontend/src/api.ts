@@ -32,7 +32,10 @@ export class ApiError extends Error {
 }
 
 /** Thin fetch wrapper: JSON in/out, adds the Bearer token, turns error responses into ApiError. */
-export async function api<T>(path: string, options: { method?: string; body?: unknown } = {}): Promise<T> {
+export async function api<T>(
+  path: string,
+  options: { method?: string; body?: unknown } = {},
+): Promise<T> {
   const headers: Record<string, string> = { Accept: 'application/json' }
   const token = getToken()
   if (token) headers.Authorization = `Bearer ${token}`
@@ -46,13 +49,17 @@ export async function api<T>(path: string, options: { method?: string; body?: un
       body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
     })
   } catch {
-    throw new ApiError('Cannot reach the server. If it was idle, wait a few seconds and try again.', 0)
+    throw new ApiError(
+      'Cannot reach the server. If it was idle, wait a few seconds and try again.',
+      0,
+    )
   }
 
   if (response.status === 204) return undefined as T
 
   const data = await response.json().catch(() => ({}))
-  if (!response.ok) throw new ApiError(data.message ?? 'Something went wrong.', response.status, data.errors)
+  if (!response.ok)
+    throw new ApiError(data.message ?? 'Something went wrong.', response.status, data.errors)
   return data as T
 }
 

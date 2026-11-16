@@ -14,7 +14,12 @@ const DECLINED_CARD = '4000000000000002' // ends in 0002: the simulated payment 
 
 /** Keeps digits only (so pasted spaces, dashes and look-alike characters can't sneak in) and groups them by 4. */
 function formatCard(value: string): string {
-  return (value.replace(/\D/g, '').slice(0, 19).match(/.{1,4}/g) ?? []).join(' ')
+  return (
+    value
+      .replace(/\D/g, '')
+      .slice(0, 19)
+      .match(/.{1,4}/g) ?? []
+  ).join(' ')
 }
 
 export default function Checkout() {
@@ -50,7 +55,9 @@ export default function Checkout() {
         <div className="panel">
           <h1>Checkout</h1>
           <p>Your cart is empty.</p>
-          <Link to="/store" className="btn">Browse games</Link>
+          <Link to="/store" className="btn">
+            Browse games
+          </Link>
         </div>
       </div>
     )
@@ -72,7 +79,8 @@ export default function Checkout() {
               <div>
                 <strong>Test card</strong>
                 <p className="muted small" style={{ margin: '2px 0 0' }}>
-                  Simulated payment: no real money is involved. Any 12-19 digit number works; a number ending in 0002 is declined.
+                  Simulated payment: no real money is involved. Any 12-19 digit number works; a
+                  number ending in 0002 is declined.
                 </p>
               </div>
             </div>
@@ -90,20 +98,40 @@ export default function Checkout() {
                 />
               </label>
               <div className="card-presets">
-                <button type="button" className="btn btn-small btn-outline" onClick={() => setCard(formatCard(APPROVED_CARD))}>
+                <button
+                  type="button"
+                  className="btn btn-small btn-outline"
+                  onClick={() => setCard(formatCard(APPROVED_CARD))}
+                >
                   Use approved test card
                 </button>
-                <button type="button" className="btn btn-small btn-outline" onClick={() => setCard(formatCard(DECLINED_CARD))}>
+                <button
+                  type="button"
+                  className="btn btn-small btn-outline"
+                  onClick={() => setCard(formatCard(DECLINED_CARD))}
+                >
                   Use declined test card
                 </button>
               </div>
               <p className="card-summary">
-                {digits.length >= 4 ? <>Card ending in <strong>{digits.slice(-4)}</strong></> : <span className="muted">No card entered yet</span>}
-                {digits.endsWith('0002') && <span className="muted"> · this test card will be declined</span>}
+                {digits.length >= 4 ? (
+                  <>
+                    Card ending in <strong>{digits.slice(-4)}</strong>
+                  </>
+                ) : (
+                  <span className="muted">No card entered yet</span>
+                )}
+                {digits.endsWith('0002') && (
+                  <span className="muted"> · this test card will be declined</span>
+                )}
               </p>
             </div>
           </div>
-          {error && <p className="error" role="alert">{error}</p>}
+          {error && (
+            <p className="error" role="alert">
+              {error}
+            </p>
+          )}
         </section>
 
         <aside className="panel" aria-label="Order summary">
@@ -112,17 +140,30 @@ export default function Checkout() {
           {!preview && !previewError && <Spinner centered label="Loading prices" />}
           {preview?.items.map((l) => (
             <div key={l.offer_id} className="summary-item">
-              {l.product ? <Cover name={l.product.name} color={l.product.cover_color} thumb /> : <span />}
+              {l.product ? (
+                <Cover name={l.product.name} color={l.product.cover_color} thumb />
+              ) : (
+                <span />
+              )}
               <div>
-                <p className="small muted" style={{ margin: 0 }}>Sold by <strong>{l.seller?.name ?? '-'}</strong></p>
+                <p className="small muted" style={{ margin: 0 }}>
+                  Sold by <strong>{l.seller?.name ?? '-'}</strong>
+                </p>
                 <strong>{l.product?.name ?? 'Unavailable offer'}</strong>
-                <p className="small muted" style={{ margin: '2px 0 0' }}>Quantity: {l.quantity}</p>
+                <p className="small muted" style={{ margin: '2px 0 0' }}>
+                  Quantity: {l.quantity}
+                </p>
               </div>
               <strong>{formatPrice(l.line_total)}</strong>
             </div>
           ))}
           {preview?.items.some((l) => !l.available) && (
-            <p className="error">Some items are no longer available. <Link to="/cart" className="link">Fix your cart</Link></p>
+            <p className="error">
+              Some items are no longer available.{' '}
+              <Link to="/cart" className="link">
+                Fix your cart
+              </Link>
+            </p>
           )}
           <div className="summary-row">
             <span>Subtotal</span>
@@ -132,7 +173,11 @@ export default function Checkout() {
             <span>Total</span>
             <span className="price big">{formatPrice(preview?.total ?? 0)}</span>
           </div>
-          <button className="btn btn-block btn-lg pay-button" type="submit" disabled={paying || blocked}>
+          <button
+            className="btn btn-block btn-lg pay-button"
+            type="submit"
+            disabled={paying || blocked}
+          >
             {paying ? 'Processing...' : `Pay ${formatPrice(preview?.total ?? 0)}`}
           </button>
           <p className="muted small" style={{ marginTop: 12 }}>

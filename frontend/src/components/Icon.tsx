@@ -2,9 +2,29 @@
  * Small line icons drawn for this project (no third-party artwork or brand logos).
  * They inherit the text colour; the size comes from the CSS around them.
  */
-export type IconName = 'grid' | 'flame' | 'tag' | 'coins' | 'monitor' | 'gamepad' | 'handheld' | 'globe' | 'key' | 'bolt' | 'search' | 'menu'
+export type IconName =
+  | 'grid'
+  | 'flame'
+  | 'tag'
+  | 'coins'
+  | 'monitor'
+  | 'gamepad'
+  | 'handheld'
+  | 'globe'
+  | 'key'
+  | 'bolt'
+  | 'search'
+  | 'menu'
 
-const common = { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true } as const
+const common = {
+  viewBox: '0 0 24 24',
+  fill: 'none',
+  stroke: 'currentColor',
+  strokeWidth: 1.8,
+  strokeLinecap: 'round',
+  strokeLinejoin: 'round',
+  'aria-hidden': true,
+} as const
 
 export default function Icon({ name }: { name: IconName }) {
   switch (name) {

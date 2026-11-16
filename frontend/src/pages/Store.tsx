@@ -15,7 +15,11 @@ const OTHER_SORTS: [string, string][] = [
   ['name', 'Name: A to Z'],
 ]
 const SORTS_BROWSING: [string, string][] = [['', 'Popularity: Most popular'], ...OTHER_SORTS]
-const SORTS_SEARCHING: [string, string][] = [['', 'Relevance: Best match'], ['popularity', 'Popularity: Most popular'], ...OTHER_SORTS]
+const SORTS_SEARCHING: [string, string][] = [
+  ['', 'Relevance: Best match'],
+  ['popularity', 'Popularity: Most popular'],
+  ...OTHER_SORTS,
+]
 
 /** Filled sort icon drawn for this project: a down arrow next to four shrinking bars. Size comes from --sort-icon. */
 function SortIcon() {
@@ -43,13 +47,25 @@ function pageList(page: number, last: number): (number | '…')[] {
 }
 
 const VISIBLE_OPTIONS = 6 // a longer list is collapsed to this many values
-const SEARCH_FROM = 8     // a list longer than this gets a small search box
+const SEARCH_FROM = 8 // a list longer than this gets a small search box
 
 /**
  * Checkbox-style list of one filter's values. A long list has a search box, shows the first few values and an
  * "N more" / "Show less" link with a chevron. Searching shows every match; the selected value is always visible.
  */
-function OptionList({ name, label, options, selected, onPick }: { name: string; label: string; options: string[]; selected: string | null; onPick: (value: string) => void }) {
+function OptionList({
+  name,
+  label,
+  options,
+  selected,
+  onPick,
+}: {
+  name: string
+  label: string
+  options: string[]
+  selected: string | null
+  onPick: (value: string) => void
+}) {
   const [expanded, setExpanded] = useState(false)
   const [query, setQuery] = useState('')
   const needle = query.trim().toLowerCase()
@@ -64,8 +80,15 @@ function OptionList({ name, label, options, selected, onPick }: { name: string; 
     <>
       {options.length > SEARCH_FROM && (
         <div className="filter-search">
-          <span className="filter-search-icon"><Icon name="search" /></span>
-          <input type="text" aria-label={`Search filter options - ${label}`} value={query} onChange={(e) => setQuery(e.target.value)} />
+          <span className="filter-search-icon">
+            <Icon name="search" />
+          </span>
+          <input
+            type="text"
+            aria-label={`Search filter options - ${label}`}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
         </div>
       )}
       <div className="filter-options">
@@ -86,7 +109,11 @@ function OptionList({ name, label, options, selected, onPick }: { name: string; 
         })}
         {shown.length === 0 && <p className="muted small">No matches</p>}
         {collapsible && (
-          <button type="button" className="link-button show-more" onClick={() => setExpanded((e) => !e)}>
+          <button
+            type="button"
+            className="link-button show-more"
+            onClick={() => setExpanded((e) => !e)}
+          >
             {expanded ? 'Show less' : `${options.length - shown.length} more`}
             <span className={`chevron${expanded ? ' up' : ''}`} aria-hidden="true" />
           </button>
@@ -97,13 +124,25 @@ function OptionList({ name, label, options, selected, onPick }: { name: string; 
 }
 
 /** A collapsible filter group: a title row (with a yellow count badge when something is selected) and its content. */
-function FilterGroup({ title, count = 0, children }: { title: string; count?: number; children: ReactNode }) {
+function FilterGroup({
+  title,
+  count = 0,
+  children,
+}: {
+  title: string
+  count?: number
+  children: ReactNode
+}) {
   return (
     <details className="filter-group" open>
       <summary>
         <span className="group-title">
           {title}
-          {count > 0 && <span className="group-badge" aria-label={`${count} selected`}>{count}</span>}
+          {count > 0 && (
+            <span className="group-badge" aria-label={`${count} selected`}>
+              {count}
+            </span>
+          )}
         </span>
       </summary>
       {children}
@@ -121,8 +160,12 @@ export default function Store() {
   const q = params.get('q') ?? ''
   const page = Number(params.get('page') ?? 1)
   // Prices are cents in the API, euros in the form.
-  const [min, setMin] = useState(params.get('min_price') ? String(Number(params.get('min_price')) / 100) : '')
-  const [max, setMax] = useState(params.get('max_price') ? String(Number(params.get('max_price')) / 100) : '')
+  const [min, setMin] = useState(
+    params.get('min_price') ? String(Number(params.get('min_price')) / 100) : '',
+  )
+  const [max, setMax] = useState(
+    params.get('max_price') ? String(Number(params.get('max_price')) / 100) : '',
+  )
 
   function update(changes: Record<string, string>) {
     const next = new URLSearchParams(params)
@@ -144,7 +187,11 @@ export default function Store() {
   function applyPrice() {
     const minCents = toCents(min)
     const maxCents = toCents(max)
-    if (minCents === (params.get('min_price') ?? '') && maxCents === (params.get('max_price') ?? '')) return
+    if (
+      minCents === (params.get('min_price') ?? '') &&
+      maxCents === (params.get('max_price') ?? '')
+    )
+      return
     update({ min_price: minCents, max_price: maxCents })
   }
 
@@ -160,14 +207,23 @@ export default function Store() {
 
   // Selected filters, shown as removable pills above the grid ("Platform: Steam ✕").
   const active: { label: string; value: string; params: string[] }[] = []
-  for (const [name, label] of [['platform', 'Platform'], ['region', 'Region'], ['genre', 'Genre']] as const) {
+  for (const [name, label] of [
+    ['platform', 'Platform'],
+    ['region', 'Region'],
+    ['genre', 'Genre'],
+  ] as const) {
     const v = params.get(name)
     if (v) active.push({ label, value: v, params: [name] })
   }
   const minPrice = params.get('min_price')
   const maxPrice = params.get('max_price')
   if (minPrice || maxPrice) {
-    const value = minPrice && maxPrice ? `${formatPrice(Number(minPrice))} - ${formatPrice(Number(maxPrice))}` : minPrice ? `from ${formatPrice(Number(minPrice))}` : `up to ${formatPrice(Number(maxPrice))}`
+    const value =
+      minPrice && maxPrice
+        ? `${formatPrice(Number(minPrice))} - ${formatPrice(Number(maxPrice))}`
+        : minPrice
+          ? `from ${formatPrice(Number(minPrice))}`
+          : `up to ${formatPrice(Number(maxPrice))}`
     active.push({ label: 'Price', value, params: ['min_price', 'max_price'] })
   }
 
@@ -180,7 +236,13 @@ export default function Store() {
   }
 
   const optionList = (name: string, label: string, options: string[] = []) => (
-    <OptionList name={name} label={label} options={options} selected={params.get(name)} onPick={(value) => update({ [name]: value })} />
+    <OptionList
+      name={name}
+      label={label}
+      options={options}
+      selected={params.get(name)}
+      onPick={(value) => update({ [name]: value })}
+    />
   )
 
   const meta = results.data?.meta
@@ -196,7 +258,11 @@ export default function Store() {
         <h1>{q ? `Results for "${q}"` : 'All games'}</h1>
       </div>
 
-      <button className="pill filters-toggle" onClick={() => setFiltersOpen((o) => !o)} aria-expanded={filtersOpen}>
+      <button
+        className="pill filters-toggle"
+        onClick={() => setFiltersOpen((o) => !o)}
+        aria-expanded={filtersOpen}
+      >
         {filtersOpen ? 'Hide filters' : `Filters${active.length ? ` (${active.length})` : ''}`}
       </button>
 
@@ -204,40 +270,79 @@ export default function Store() {
         <aside className={`filters${filtersOpen ? ' open' : ''}`} aria-label="Filters">
           <div className="filters-head">
             <span>Filters</span>
-            <button className="link-button" onClick={clearAll}>Clear all</button>
+            <button className="link-button" onClick={clearAll}>
+              Clear all
+            </button>
           </div>
           <FilterGroup title="Price range (EUR)" count={minPrice || maxPrice ? 1 : 0}>
             <div className="price-filter">
               <div className="range">
-                <input type="text" inputMode="decimal" placeholder="Min" value={min} onChange={(e) => setMin(e.target.value)} onBlur={applyPrice} onKeyDown={applyPriceOnEnter} aria-label="Price range - Minimum value" />
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  placeholder="Min"
+                  value={min}
+                  onChange={(e) => setMin(e.target.value)}
+                  onBlur={applyPrice}
+                  onKeyDown={applyPriceOnEnter}
+                  aria-label="Price range - Minimum value"
+                />
                 <strong>-</strong>
-                <input type="text" inputMode="decimal" placeholder="Max" value={max} onChange={(e) => setMax(e.target.value)} onBlur={applyPrice} onKeyDown={applyPriceOnEnter} aria-label="Price range - Maximum value" />
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  placeholder="Max"
+                  value={max}
+                  onChange={(e) => setMax(e.target.value)}
+                  onBlur={applyPrice}
+                  onKeyDown={applyPriceOnEnter}
+                  aria-label="Price range - Maximum value"
+                />
               </div>
             </div>
           </FilterGroup>
-          <FilterGroup title="Platforms" count={params.get('platform') ? 1 : 0}>{optionList('platform', 'Platforms', filters.data?.platforms)}</FilterGroup>
-          <FilterGroup title="Regions" count={params.get('region') ? 1 : 0}>{optionList('region', 'Regions', filters.data?.regions)}</FilterGroup>
-          <FilterGroup title="Genres" count={params.get('genre') ? 1 : 0}>{optionList('genre', 'Genres', filters.data?.genres)}</FilterGroup>
+          <FilterGroup title="Platforms" count={params.get('platform') ? 1 : 0}>
+            {optionList('platform', 'Platforms', filters.data?.platforms)}
+          </FilterGroup>
+          <FilterGroup title="Regions" count={params.get('region') ? 1 : 0}>
+            {optionList('region', 'Regions', filters.data?.regions)}
+          </FilterGroup>
+          <FilterGroup title="Genres" count={params.get('genre') ? 1 : 0}>
+            {optionList('genre', 'Genres', filters.data?.genres)}
+          </FilterGroup>
         </aside>
 
         <main>
           {active.length > 0 && (
             <div className="filter-pills">
               {active.map((f) => (
-                <button key={f.label} className="pill" onClick={() => removeFilter(f.params)} aria-label={`Remove ${f.label} filter ${f.value}`}>
+                <button
+                  key={f.label}
+                  className="pill"
+                  onClick={() => removeFilter(f.params)}
+                  aria-label={`Remove ${f.label} filter ${f.value}`}
+                >
                   {f.label}: {f.value} ✕
                 </button>
               ))}
-              <button className="link-button clear-all" onClick={clearAll}>Clear all</button>
+              <button className="link-button clear-all" onClick={clearAll}>
+                Clear all
+              </button>
             </div>
           )}
           <div className="results-bar">
             <span className="results-found">{meta ? `Results found: ${meta.total}` : ''}</span>
             <label className="sort">
               <SortIcon />
-              <select aria-label="Sort by" value={params.get('sort') ?? ''} onChange={(e) => update({ sort: e.target.value })}>
+              <select
+                aria-label="Sort by"
+                value={params.get('sort') ?? ''}
+                onChange={(e) => update({ sort: e.target.value })}
+              >
                 {(q ? SORTS_SEARCHING : SORTS_BROWSING).map(([v, label]) => (
-                  <option key={v} value={v}>{label}</option>
+                  <option key={v} value={v}>
+                    {label}
+                  </option>
                 ))}
               </select>
             </label>
@@ -246,16 +351,28 @@ export default function Store() {
           <Status loading={results.loading} error={results.error} />
           {results.data && (
             <>
-              {results.data.data.length === 0 && <p>No games match your search. Try fewer filters or another spelling.</p>}
+              {results.data.data.length === 0 && (
+                <p>No games match your search. Try fewer filters or another spelling.</p>
+              )}
               <div className="grid">
-                {results.data.data.map((p) => <ProductCard key={p.id} product={p} />)}
+                {results.data.data.map((p) => (
+                  <ProductCard key={p.id} product={p} />
+                ))}
               </div>
               {results.data.meta.last_page > 1 && (
                 <nav className="pager" aria-label="Pages">
-                  <button disabled={page <= 1} onClick={() => update({ page: String(page - 1) })} aria-label="Previous page">‹</button>
+                  <button
+                    disabled={page <= 1}
+                    onClick={() => update({ page: String(page - 1) })}
+                    aria-label="Previous page"
+                  >
+                    ‹
+                  </button>
                   {pageList(results.data.meta.page, results.data.meta.last_page).map((p, i) =>
                     p === '…' ? (
-                      <span key={`gap${i}`} className="muted">…</span>
+                      <span key={`gap${i}`} className="muted">
+                        …
+                      </span>
                     ) : (
                       <button
                         key={p}
@@ -267,7 +384,13 @@ export default function Store() {
                       </button>
                     ),
                   )}
-                  <button disabled={page >= results.data.meta.last_page} onClick={() => update({ page: String(page + 1) })} aria-label="Next page">›</button>
+                  <button
+                    disabled={page >= results.data.meta.last_page}
+                    onClick={() => update({ page: String(page + 1) })}
+                    aria-label="Next page"
+                  >
+                    ›
+                  </button>
                 </nav>
               )}
             </>

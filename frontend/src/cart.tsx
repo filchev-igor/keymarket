@@ -53,7 +53,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }),
     setQuantity: (offerId, quantity) =>
       setItems((cur) =>
-        cur.map((i) => (i.offer_id === offerId ? { ...i, quantity: Math.max(1, Math.min(quantity, MAX_QUANTITY)) } : i)),
+        cur.map((i) =>
+          i.offer_id === offerId
+            ? { ...i, quantity: Math.max(1, Math.min(quantity, MAX_QUANTITY)) }
+            : i,
+        ),
       ),
     remove: (offerId) => setItems((cur) => cur.filter((i) => i.offer_id !== offerId)),
     clear: () => setItems([]),

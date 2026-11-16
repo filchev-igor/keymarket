@@ -13,7 +13,12 @@ function Banners() {
     <section className="banners">
       <Status loading={loading} error={error} />
       {data?.data.map((b) => (
-        <Link key={b.id} to={b.link} className="banner" style={{ background: `linear-gradient(120deg, ${b.color}, #12082b)` }}>
+        <Link
+          key={b.id}
+          to={b.link}
+          className="banner"
+          style={{ background: `linear-gradient(120deg, ${b.color}, #12082b)` }}
+        >
           <h2>{b.title}</h2>
           {b.subtitle && <p>{b.subtitle}</p>}
         </Link>
@@ -26,7 +31,8 @@ function Banners() {
 const PLATFORM_ORDER = ['PlayStation', 'Xbox', 'Steam', 'Nintendo', 'Epic Games']
 
 function byPlatformOrder(a: string, b: string): number {
-  const rank = (p: string) => (PLATFORM_ORDER.includes(p) ? PLATFORM_ORDER.indexOf(p) : PLATFORM_ORDER.length)
+  const rank = (p: string) =>
+    PLATFORM_ORDER.includes(p) ? PLATFORM_ORDER.indexOf(p) : PLATFORM_ORDER.length
   return rank(a) - rank(b) || a.localeCompare(b)
 }
 
@@ -35,13 +41,19 @@ function CategoryStrip() {
   const { data } = useFetch<Filters>('/filters')
   const items = [
     { label: 'Games', to: '/store', icon: 'grid' as const },
-    ...[...(data?.platforms ?? [])].sort(byPlatformOrder).map((p) => ({ label: p, to: `/store?platform=${encodeURIComponent(p)}`, icon: platformIcon(p) })),
+    ...[...(data?.platforms ?? [])].sort(byPlatformOrder).map((p) => ({
+      label: p,
+      to: `/store?platform=${encodeURIComponent(p)}`,
+      icon: platformIcon(p),
+    })),
   ]
   return (
     <nav className="category-strip" aria-label="Browse categories">
       {items.map((item) => (
         <Link key={item.label} to={item.to} className="category">
-          <span className="category-icon"><Icon name={item.icon} /></span>
+          <span className="category-icon">
+            <Icon name={item.icon} />
+          </span>
           <span>{item.label}</span>
         </Link>
       ))}
@@ -57,10 +69,16 @@ function ProductBlock({ title, path, more }: { title: string; path: string; more
         <h2>{title}</h2>
       </div>
       <Status loading={loading} error={error} />
-      <div className="row-scroll">{data?.data.map((p) => <ProductCard key={p.id} product={p} />)}</div>
+      <div className="row-scroll">
+        {data?.data.map((p) => (
+          <ProductCard key={p.id} product={p} />
+        ))}
+      </div>
       {data && data.data.length > 0 && (
         <div className="show-all">
-          <Link to={more} className="btn">Show all</Link>
+          <Link to={more} className="btn">
+            Show all
+          </Link>
         </div>
       )}
     </section>
@@ -77,7 +95,9 @@ function Genres() {
       </div>
       <div className="tiles">
         {data.genres.map((g) => (
-          <Link key={g} to={`/store?genre=${encodeURIComponent(g)}`} className="tile">{g}</Link>
+          <Link key={g} to={`/store?genre=${encodeURIComponent(g)}`} className="tile">
+            {g}
+          </Link>
         ))}
       </div>
     </section>
