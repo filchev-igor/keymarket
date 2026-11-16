@@ -96,6 +96,7 @@
   --font: 'Montserrat Variable', 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
   --font-ui: 'Montserrat Variable', Arial, Helvetica, sans-serif; /* the reference stack; Montserrat stands in for Metropolis */
   --fs-account: 14px;         /* Log in / Register / Sign out */
+  --fw-account: 600;          /* weight of those links */
   --fs-filter: 16px;          /* filter sidebar text and group titles */
   --fs-title: 30px;   /* page title, 30/700 on desktop (24 on phones) */
   --fs-section: 20px; /* 20/800 section heading */
@@ -223,8 +224,12 @@ label { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; fo
 /* Account links (Log in, Register, Sign out, My orders): the reference's font settings at 14px */
 .nav {
   display: flex; align-items: center; gap: 22px; margin-left: auto;
-  font-family: var(--font-ui); font-size: var(--fs-account); font-weight: 800;
-  font-feature-settings: normal; font-kerning: auto; font-language-override: normal; font-optical-sizing: auto;
+  font-family: var(--font-ui); font-size: var(--fs-account); font-weight: var(--fw-account);
+  font-style: normal; font-stretch: 100%; font-size-adjust: none;
+  font-feature-settings: normal; font-variation-settings: normal; font-kerning: auto; font-language-override: normal; font-optical-sizing: auto;
+  font-variant-alternates: normal; font-variant-caps: normal; font-variant-east-asian: normal; font-variant-emoji: normal;
+  font-variant-ligatures: normal; font-variant-numeric: normal; font-variant-position: normal;
+  -webkit-font-smoothing: antialiased;
 }
 .currency { color: var(--muted); font-weight: 800; }
 .icon-link { position: relative; display: grid; place-items: center; width: 40px; height: 40px; }
@@ -236,8 +241,8 @@ label { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; fo
 .account-link { display: inline-flex; align-items: center; gap: var(--account-icon-gap); }
 .account-link:hover { text-decoration: none; color: var(--yellow); }
 .account-icon { width: var(--account-icon); height: auto; flex-shrink: 0; }
-.account-sep { color: var(--text-3); font-weight: 600; }
-.user-chip { display: flex; align-items: center; gap: 8px; background: none; border: 0; color: var(--text); cursor: pointer; font: inherit; font-weight: 800; padding: 0; }
+.account-sep { color: var(--text-3); }
+.user-chip { display: flex; align-items: center; gap: 8px; background: none; border: 0; color: var(--text); cursor: pointer; font: inherit; padding: 0; } /* "Sign out" inherits the account link font */
 .avatar { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--teal); color: var(--on-teal); font-weight: 800; font-size: var(--fs-ui); }
 
 .subnav { background: var(--nav-bg); }
