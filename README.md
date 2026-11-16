@@ -24,6 +24,7 @@ Payment is **simulated and no real money is involved**: any 12-19 digit card num
 - **Auth:** register, sign in, sign out with Laravel Sanctum tokens; checkout and order history are protected.
 - **Order history:** every order with its keys.
 - **Styling:** an Eneba-style look driven entirely by design tokens (CSS variables in `frontend/src/index.css`): the purple palette, yellow action buttons, teal tags, type scale, radii and layout proportions were measured from the public site. Header with search and a second navigation row, left filter sidebar, product cards with a platform strip and a teal sale tag, a product page with a right-hand purchase box and a sellers list, a 3-step cart/checkout and a footer, all responsive down to phone width. The font is Montserrat, self-hosted from the npm package `@fontsource-variable/montserrat` (a free font similar to the one the reference uses; nothing is loaded from a CDN). The logo is a placeholder wordmark of our own, covers are generated gradients, and no Eneba logo, images, text or code are used.
+- **Code quality:** ESLint and Prettier are configured for the frontend (`npm run lint`, `npm run format:check`), with a rule that enforces arrow functions for components, hooks and helpers. TypeScript is pinned to 6.0.x because `typescript-eslint` does not support TypeScript 7 yet.
 
 API contract: [`API.md`](API.md). Deployment guide: [`DEPLOY.md`](DEPLOY.md).
 
@@ -112,12 +113,15 @@ Deliberately **not** tested, and why:
 - **TanStack Query** for server data: caching, request de-duplication and retries, replacing the small hand-written `useFetch` hook.
 - **Laravel Pint** to keep the PHP code style consistent automatically.
 - **GitHub Actions CI** that runs the backend tests, the frontend type-check and the production build on every pull request.
+- **A search suggestions dropdown** under the header search box, on top of the existing typo-tolerant search.
+- **Multi-select filters** (the API accepts one value per group today).
 
 ## Process
 
 - **Preparation:** the planning, the environment setup and the project rules in [`CLAUDE.md`](CLAUDE.md) were prepared in a separate Claude chat, before any code was written.
-- **Code:** all the code was written by Claude Code in numbered branches, `K-1` to `K-9`, each merged into `main` through a pull request (squash and merge; the branches are kept so the history stays visible). `K-6` was used by two branches (`K-6-cleanup` and `K-6-eneba-styling`) before the automatic branch-numbering rule was added to `CLAUDE.md`; that rule prevents it from happening again.
+- **Code:** all the code was written by Claude Code in numbered branches, `K-1` to `K-15`, each merged into `main` through a pull request (squash and merge; the branches are kept so the history stays visible). `K-6` was used by two branches (`K-6-cleanup` and `K-6-eneba-styling`) before the automatic branch-numbering rule was added to `CLAUDE.md`; that rule prevents it from happening again.
 - **Log:** the full Claude Code log, prompts and responses, is in [`docs/ai-log.md`](docs/ai-log.md).
+- **How I used AI:** I made the decisions and the AI did the typing. I chose the stack (Laravel, Postgres on Supabase, React, deployed on Render and Vercel), the scope and what to cut, and I wrote the working rules in CLAUDE.md before any code: plan first, small steps with a short explanation of each, one branch and one pull request per feature, no secrets ever pasted into the chat, English only. I reviewed every pull request on GitHub (files changed) before approving the squash merge, and I checked the live site by hand after each deploy. Things I required or caught myself: the test orders created from my local run (local and live share one database), a safety guard that stops the test suite from ever running on the production database, and idempotent seeders so a restart of the free Render service does not duplicate data. For the visual match I measured the real Eneba pages (colors, sizes, spacing) and gave them to the agent as a design notes file instead of asking it to guess.
 
 ## Privacy note
 
