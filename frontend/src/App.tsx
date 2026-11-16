@@ -10,7 +10,7 @@ import { OrderDetail, OrderList } from './pages/Orders'
 import ProductPage from './pages/ProductPage'
 import Store from './pages/Store'
 
-export default function App() {
+const App = () => {
   return (
     <>
       <Header />
@@ -22,12 +22,43 @@ export default function App() {
         <Route path="/login" element={<AuthForm mode="login" />} />
         <Route path="/register" element={<AuthForm mode="register" />} />
         {/* Signed-in only */}
-        <Route path="/checkout" element={<RequireAuth><Checkout /></RequireAuth>} />
-        <Route path="/orders" element={<RequireAuth><OrderList /></RequireAuth>} />
-        <Route path="/orders/:id" element={<RequireAuth><OrderDetail /></RequireAuth>} />
-        <Route path="*" element={<div className="container"><h1>Page not found</h1><Link to="/">Go home</Link></div>} />
+        <Route
+          path="/checkout"
+          element={
+            <RequireAuth>
+              <Checkout />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <RequireAuth>
+              <OrderList />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/orders/:id"
+          element={
+            <RequireAuth>
+              <OrderDetail />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <div className="container">
+              <h1>Page not found</h1>
+              <Link to="/">Go home</Link>
+            </div>
+          }
+        />
       </Routes>
       <Footer />
     </>
   )
 }
+
+export default App

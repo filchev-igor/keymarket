@@ -4,7 +4,7 @@ import { ApiError } from '../api'
 import { useAuth } from '../auth'
 
 /** One form for both sign in and register. */
-export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
+const AuthForm = ({ mode }: { mode: 'login' | 'register' }) => {
   const { login, register } = useAuth()
   const navigate = useNavigate()
   const [params] = useSearchParams()
@@ -18,7 +18,7 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({})
   const [busy, setBusy] = useState(false)
 
-  async function submit(e: FormEvent) {
+  const submit = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
     setFieldErrors({})
@@ -34,7 +34,12 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
     }
   }
 
-  const fieldError = (field: string) => fieldErrors[field]?.map((m) => <span key={m} className="error small">{m}</span>)
+  const fieldError = (field: string) =>
+    fieldErrors[field]?.map((m) => (
+      <span key={m} className="error small">
+        {m}
+      </span>
+    ))
 
   return (
     <div className="container narrow">
@@ -43,13 +48,24 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
         {isRegister && (
           <label>
             Name
-            <input value={name} onChange={(e) => setName(e.target.value)} required autoComplete="name" />
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              autoComplete="name"
+            />
             {fieldError('name')}
           </label>
         )}
         <label>
           Email
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            autoComplete="email"
+          />
           {fieldError('email')}
         </label>
         <label>
@@ -66,12 +82,20 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
           {fieldError('password')}
         </label>
         {error && Object.keys(fieldErrors).length === 0 && <p className="error">{error}</p>}
-        <button className="btn" type="submit" disabled={busy}>{isRegister ? 'Create account' : 'Sign in'}</button>
+        <button className="btn" type="submit" disabled={busy}>
+          {isRegister ? 'Create account' : 'Sign in'}
+        </button>
         <p className="muted">
           {isRegister ? (
-            <>Already have an account? <Link to={`/login?next=${encodeURIComponent(next)}`}>Sign in</Link></>
+            <>
+              Already have an account?{' '}
+              <Link to={`/login?next=${encodeURIComponent(next)}`}>Sign in</Link>
+            </>
           ) : (
-            <>New here? <Link to={`/register?next=${encodeURIComponent(next)}`}>Create an account</Link></>
+            <>
+              New here?{' '}
+              <Link to={`/register?next=${encodeURIComponent(next)}`}>Create an account</Link>
+            </>
           )}
         </p>
         {!isRegister && <p className="muted small">Demo account: demo@keymarket.test / demo1234</p>}
@@ -79,3 +103,5 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
     </div>
   )
 }
+
+export default AuthForm

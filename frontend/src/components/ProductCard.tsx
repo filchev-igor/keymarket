@@ -5,24 +5,34 @@ import { formatPrice } from '../format'
 import type { Product } from '../types'
 
 /** Generated cover (no copyrighted images): a gradient from the product's colour with its name. */
-export function Cover({ name, color, thumb = false }: { name: string; color: string; thumb?: boolean }) {
+export const Cover = ({
+  name,
+  color,
+  thumb = false,
+}: {
+  name: string
+  color: string
+  thumb?: boolean
+}) => {
   return (
     <div
       className={`cover${thumb ? ' thumb' : ''}`}
-      style={{ background: `radial-gradient(circle at 25% 15%, ${color}, transparent 70%), linear-gradient(160deg, ${color}, #12082b)` }}
+      style={{
+        background: `radial-gradient(circle at 25% 15%, ${color}, transparent 70%), linear-gradient(160deg, ${color}, #12082b)`,
+      }}
     >
       <span className="cover-title">{name}</span>
     </div>
   )
 }
 
-export default function ProductCard({ product }: { product: Product }) {
+const ProductCard = ({ product }: { product: Product }) => {
   const cart = useCart()
   const [added, setAdded] = useState(false)
   const url = `/product/${product.slug}`
 
   // The hover button buys the cheapest in-stock offer (the one whose price is shown on the card).
-  function add() {
+  const add = () => {
     if (product.best_offer_id === null) return
     cart.add(product.best_offer_id)
     setAdded(true)
@@ -35,7 +45,9 @@ export default function ProductCard({ product }: { product: Product }) {
         <div className="card-media">
           <Cover name={product.name} color={product.cover_color} />
           {/* Teal tag: the real discount of the cheapest offer (there is no cashback feature in this demo) */}
-          {product.discount_percent ? <span className="tag-teal">SALE -{product.discount_percent}%</span> : null}
+          {product.discount_percent ? (
+            <span className="tag-teal">SALE -{product.discount_percent}%</span>
+          ) : null}
         </div>
         <div className="platform-strip">{product.platform}</div>
         <div className="card-body">
@@ -49,7 +61,9 @@ export default function ProductCard({ product }: { product: Product }) {
               <span className="price-from">
                 From
                 {product.old_price && <s>{formatPrice(product.old_price)}</s>}
-                {product.discount_percent ? <span className="pct">-{product.discount_percent}%</span> : null}
+                {product.discount_percent ? (
+                  <span className="pct">-{product.discount_percent}%</span>
+                ) : null}
               </span>
               <strong className="price">{formatPrice(product.price)}</strong>
               {product.old_price && (
@@ -66,9 +80,13 @@ export default function ProductCard({ product }: { product: Product }) {
           <button type="button" className="btn btn-block" onClick={add}>
             {added ? 'Added ✓' : 'Add to cart'}
           </button>
-          <Link to={url} className="view-offers">View offers</Link>
+          <Link to={url} className="view-offers">
+            View offers
+          </Link>
         </div>
       )}
     </div>
   )
 }
+
+export default ProductCard

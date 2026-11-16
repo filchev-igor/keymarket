@@ -2,11 +2,31 @@
  * Small line icons drawn for this project (no third-party artwork or brand logos).
  * They inherit the text colour; the size comes from the CSS around them.
  */
-export type IconName = 'grid' | 'flame' | 'tag' | 'coins' | 'monitor' | 'gamepad' | 'handheld' | 'globe' | 'key' | 'bolt' | 'search' | 'menu'
+export type IconName =
+  | 'grid'
+  | 'flame'
+  | 'tag'
+  | 'coins'
+  | 'monitor'
+  | 'gamepad'
+  | 'handheld'
+  | 'globe'
+  | 'key'
+  | 'bolt'
+  | 'search'
+  | 'menu'
 
-const common = { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true } as const
+const common = {
+  viewBox: '0 0 24 24',
+  fill: 'none',
+  stroke: 'currentColor',
+  strokeWidth: 1.8,
+  strokeLinecap: 'round',
+  strokeLinejoin: 'round',
+  'aria-hidden': true,
+} as const
 
-export default function Icon({ name }: { name: IconName }) {
+const Icon = ({ name }: { name: IconName }) => {
   switch (name) {
     case 'grid':
       return (
@@ -98,9 +118,4 @@ export default function Icon({ name }: { name: IconName }) {
   }
 }
 
-/** Which icon stands for a platform (generic shapes, not the platforms' logos). */
-export function platformIcon(platform: string): IconName {
-  if (/steam|epic|pc/i.test(platform)) return 'monitor'
-  if (/nintendo/i.test(platform)) return 'handheld'
-  return 'gamepad'
-}
+export default Icon
