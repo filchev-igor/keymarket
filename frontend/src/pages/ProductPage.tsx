@@ -91,7 +91,7 @@ export default function ProductPage() {
             </div>
           </div>
 
-          <section>
+          <section className="offers-panel">
             {product.offers.length === 0 ? (
               <>
                 <h2 className="subhead">Offers</h2>

@@ -30,11 +30,13 @@ export default function ProductCard({ product }: { product: Product }) {
           <p className="muted small">Out of stock</p>
         ) : (
           <div className="price-block">
-            <span className="price-from">From</span>
-            <span className="price-line">
-              <strong className="price">{formatPrice(product.price)}</strong>
-              {product.old_price && <s className="old-price">{formatPrice(product.old_price)}</s>}
+            {/* "From" line with the struck-through old price and the discount, then the big price, then the saving */}
+            <span className="price-from">
+              From
+              {product.old_price && <s>{formatPrice(product.old_price)}</s>}
+              {product.discount_percent ? <span className="pct">-{product.discount_percent}%</span> : null}
             </span>
+            <strong className="price">{formatPrice(product.price)}</strong>
             {product.old_price && (
               <span className="save">Save {formatPrice(product.old_price - product.price)}</span>
             )}

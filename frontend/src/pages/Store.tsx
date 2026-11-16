@@ -26,6 +26,39 @@ function pageList(page: number, last: number): (number | '…')[] {
   return out
 }
 
+const VISIBLE_OPTIONS = 6
+
+/** Checkbox-style list of one filter's values; long lists show the first few and a "Show more" toggle. */
+function OptionList({ name, options, selected, onPick }: { name: string; options: string[]; selected: string | null; onPick: (value: string) => void }) {
+  const [expanded, setExpanded] = useState(false)
+  // Keep the selected value visible even when the list is collapsed.
+  const shown = expanded || options.length <= VISIBLE_OPTIONS + 1 ? options : options.filter((o, i) => i < VISIBLE_OPTIONS || o === selected)
+  return (
+    <div className="filter-options">
+      {shown.map((o) => {
+        const isSelected = selected === o
+        return (
+          <button
+            key={`${name}-${o}`}
+            type="button"
+            className={`option${isSelected ? ' selected' : ''}`}
+            aria-pressed={isSelected}
+            onClick={() => onPick(isSelected ? '' : o)}
+          >
+            <span className="checkbox" aria-hidden="true" />
+            {o}
+          </button>
+        )
+      })}
+      {options.length > VISIBLE_OPTIONS + 1 && (
+        <button type="button" className="link-button show-more" onClick={() => setExpanded((e) => !e)}>
+          {expanded ? 'Show less' : `Show more (${options.length - shown.length})`}
+        </button>
+      )}
+    </div>
+  )
+}
+
 function FilterGroup({ title, children }: { title: string; children: ReactNode }) {
   return (
     <details className="filter-group" open>
@@ -79,23 +112,7 @@ export default function Store() {
   }
 
   const optionList = (name: string, options: string[] = []) => (
-    <div className="filter-options">
-      {options.map((o) => {
-        const selected = params.get(name) === o
-        return (
-          <button
-            key={o}
-            type="button"
-            className={`option${selected ? ' selected' : ''}`}
-            aria-pressed={selected}
-            onClick={() => update({ [name]: selected ? '' : o })}
-          >
-            <span className="checkbox" aria-hidden="true" />
-            {o}
-          </button>
-        )
-      })}
-    </div>
+    <OptionList name={name} options={options} selected={params.get(name)} onPick={(value) => update({ [name]: value })} />
   )
 
   const meta = results.data?.meta

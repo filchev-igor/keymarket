@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Link, NavLink, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useFetch } from '../api'
 import { useAuth } from '../auth'
 import { useCart } from '../cart'
@@ -42,7 +42,7 @@ export default function Header() {
 
   return (
     <header className="header">
-      <div className="container header-inner" style={{ paddingBlock: 8 }}>
+      <div className="container header-inner">
         {/* Placeholder wordmark: our own shape and name, not the reference logo */}
         <Link to="/" className="logo" aria-label="keymarket home">
           <span className="logo-mark">k</span>
@@ -70,26 +70,27 @@ export default function Header() {
           </Link>
           {user ? (
             <>
-              <NavLink to="/orders" className="nav-text">My orders</NavLink>
+              <Link to="/orders" className="nav-text">My orders</Link>
               <button className="user-chip" onClick={() => logout().then(() => navigate('/'))} title="Sign out">
                 <span className="avatar">{user.name.charAt(0).toUpperCase()}</span>
                 <span className="user-name">Sign out</span>
               </button>
             </>
           ) : (
-            <>
-              <Link to="/login">Sign in</Link>
-              <Link to="/register" className="btn btn-small">Register</Link>
-            </>
+            // Plain text links separated by a thin divider, like the reference (no coloured button)
+            <span className="account">
+              <Link to="/login">Log in</Link>
+              <Link to="/register">Register</Link>
+            </span>
           )}
         </nav>
       </div>
 
       <div className="subnav">
         <div className="container subnav-inner">
-          <NavLink to="/store" end>All games</NavLink>
+          <Link to="/store">All games</Link>
           <Link to="/store?sort=popularity">Best sellers</Link>
-          <Link to="/store?sort=discount" className="hot">Hot deals</Link>
+          <Link to="/store?sort=discount">Hot deals</Link>
           <Link to="/store?sort=price_asc">Cheap games</Link>
           {filters.data?.platforms.map((p) => (
             <Link key={p} to={`/store?platform=${encodeURIComponent(p)}`}>{p}</Link>
