@@ -11,9 +11,10 @@ class CheckoutController extends Controller
 {
     public function store(Request $request, CheckoutService $checkout): JsonResponse
     {
-        // Let people type the card number with spaces.
+        // Accept the usual ways of writing a card number: spaces, dashes and non-breaking spaces
+        // (what you get when pasting from a web page) are separators, not part of the number.
         $request->merge([
-            'payment' => ['card_number' => preg_replace('/\s+/', '', (string) $request->input('payment.card_number'))],
+            'payment' => ['card_number' => preg_replace('/[\s\x{00A0}-]+/u', '', (string) $request->input('payment.card_number'))],
         ]);
 
         $data = $request->validate([

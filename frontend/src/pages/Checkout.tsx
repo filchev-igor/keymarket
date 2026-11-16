@@ -6,11 +6,20 @@ import { formatPrice } from '../format'
 import type { Order } from '../types'
 import { useCartPreview } from './Cart'
 
+const APPROVED_CARD = '4242424242424242'
+const DECLINED_CARD = '4000000000000002' // ends in 0002: the simulated payment declines it
+
+/** Keeps digits only (so pasted spaces, dashes and look-alike characters can't sneak in) and groups them by 4. */
+function formatCard(value: string): string {
+  return (value.replace(/\D/g, '').slice(0, 19).match(/.{1,4}/g) ?? []).join(' ')
+}
+
 export default function Checkout() {
   const cart = useCart()
   const navigate = useNavigate()
   const { preview, error: previewError } = useCartPreview()
-  const [card, setCard] = useState('4242 4242 4242 4242')
+  // Starts empty on purpose: a pre-filled approved card made it too easy to pay with a card you didn't mean to use.
+  const [card, setCard] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [paying, setPaying] = useState(false)
 
@@ -41,7 +50,8 @@ export default function Checkout() {
     )
   }
 
-  const blocked = !preview || preview.items.some((l) => !l.available)
+  const digits = card.replace(/\D/g, '')
+  const blocked = !preview || preview.items.some((l) => !l.available) || digits.length < 12
 
   return (
     <div className="container checkout">
@@ -64,10 +74,30 @@ export default function Checkout() {
         <h2>Payment</h2>
         <p className="notice">Simulated payment: no real money is involved. Any 12-19 digit number works; a number ending in 0002 is declined.</p>
         <label>
-          Card number
-          <input value={card} onChange={(e) => setCard(e.target.value)} inputMode="numeric" autoComplete="off" required />
+          Test card number
+          <input
+            name="demo-test-card"
+            value={card}
+            onChange={(e) => setCard(formatCard(e.target.value))}
+            placeholder="Type a number or use a button below"
+            inputMode="numeric"
+            autoComplete="off"
+            required
+          />
         </label>
-        {error && <p className="error">{error}</p>}
+        <div className="card-presets">
+          <button type="button" className="btn btn-small btn-outline" onClick={() => setCard(formatCard(APPROVED_CARD))}>
+            Use approved test card
+          </button>
+          <button type="button" className="btn btn-small btn-outline" onClick={() => setCard(formatCard(DECLINED_CARD))}>
+            Use declined test card
+          </button>
+        </div>
+        <p className="card-summary">
+          {digits.length >= 4 ? <>Card ending in <strong>{digits.slice(-4)}</strong></> : <span className="muted">No card entered yet</span>}
+          {digits.endsWith('0002') && <span className="muted"> · this test card will be declined</span>}
+        </p>
+        {error && <p className="error" role="alert">{error}</p>}
         <button className="btn" type="submit" disabled={paying || blocked}>
           {paying ? 'Processing...' : `Pay ${formatPrice(preview?.total ?? 0)}`}
         </button>
