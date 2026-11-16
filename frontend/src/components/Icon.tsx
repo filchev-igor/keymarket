@@ -2,7 +2,7 @@
  * Small line icons drawn for this project (no third-party artwork or brand logos).
  * They inherit the text colour; the size comes from the CSS around them.
  */
-export type IconName = 'grid' | 'flame' | 'tag' | 'coins' | 'monitor' | 'gamepad' | 'handheld' | 'globe' | 'key' | 'bolt' | 'search'
+export type IconName = 'grid' | 'flame' | 'tag' | 'coins' | 'monitor' | 'gamepad' | 'handheld' | 'globe' | 'key' | 'bolt' | 'search' | 'menu'
 
 const common = { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true } as const
 
@@ -72,6 +72,12 @@ export default function Icon({ name }: { name: IconName }) {
         <svg {...common} strokeWidth={1.5}>
           <circle cx="10.5" cy="10.5" r="8" />
           <path d="m16.5 16.5 5.5 5.5" />
+        </svg>
+      )
+    case 'menu':
+      return (
+        <svg {...common}>
+          <path d="M4 6.5h16M4 12h16M4 17.5h16" />
         </svg>
       )
     case 'bolt':
