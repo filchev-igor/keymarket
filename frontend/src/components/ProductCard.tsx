@@ -4,15 +4,20 @@ import { useCart } from '../cart'
 import { formatPrice } from '../format'
 import type { Product } from '../types'
 
-/** Generated cover (no copyrighted images): a gradient from the product's colour with its name. */
+/**
+ * Generated cover (no copyrighted images): a gradient from the product's colour, with its name drawn on it.
+ * A product card turns the name off (`showTitle={false}`) because the card already prints the title below the image.
+ */
 export const Cover = ({
   name,
   color,
   thumb = false,
+  showTitle = true,
 }: {
   name: string
   color: string
   thumb?: boolean
+  showTitle?: boolean
 }) => {
   return (
     <div
@@ -21,7 +26,7 @@ export const Cover = ({
         background: `radial-gradient(circle at 25% 15%, ${color}, transparent 70%), linear-gradient(160deg, ${color}, #12082b)`,
       }}
     >
-      <span className="cover-title">{name}</span>
+      {showTitle && <span className="cover-title">{name}</span>}
     </div>
   )
 }
@@ -43,7 +48,7 @@ const ProductCard = ({ product }: { product: Product }) => {
     <div className="card">
       <Link to={url} className="card-link">
         <div className="card-media">
-          <Cover name={product.name} color={product.cover_color} />
+          <Cover name={product.name} color={product.cover_color} showTitle={false} />
           {/* Teal tag: the real discount of the cheapest offer (there is no cashback feature in this demo) */}
           {product.discount_percent ? (
             <span className="tag-teal">SALE -{product.discount_percent}%</span>
