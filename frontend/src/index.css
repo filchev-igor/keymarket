@@ -59,6 +59,8 @@
   --search-h: 55px;
   --search-w: 530px;
   --cart-icon: 24px;        /* header cart */
+  --sort-icon: 20px;        /* store sort control icon */
+  --sort-gap: 10px;         /* space between the sort icon, its label and the chevron */
   --search-icon: 24px;      /* magnifier */
   --search-clear-icon: 14px;/* clear-text cross */
   --search-pad-left: 48px;  /* room for the magnifier */
@@ -333,8 +335,8 @@ label { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; fo
 .results-found { color: var(--muted); font-size: var(--fs-results); font-weight: 600; }
 .results-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
 /* Sort control: plain text with a small icon, no background or pill ("Popularity: Most popular") */
-.sort { display: flex; flex-direction: row; align-items: center; gap: 8px; margin: 0; color: var(--text); font-size: var(--fs-sort); font-weight: 600; }
-.sort-icon { width: 20px; height: 20px; flex-shrink: 0; color: var(--muted); }
+.sort { display: flex; flex-direction: row; align-items: center; gap: var(--sort-gap); margin: 0; color: var(--text); font-size: var(--fs-sort); font-weight: 600; }
+.sort-icon { width: var(--sort-icon); height: var(--sort-icon); flex-shrink: 0; color: var(--text); }
 .sort select {
   width: auto; height: auto; background-color: transparent; box-shadow: none; border-radius: 0;
   padding: 0 22px 0 0; font-size: var(--fs-sort); font-weight: 600; cursor: pointer; appearance: none;

@@ -16,11 +16,15 @@ const OTHER_SORTS: [string, string][] = [
 const SORTS_BROWSING: [string, string][] = [['', 'Popularity: Most popular'], ...OTHER_SORTS]
 const SORTS_SEARCHING: [string, string][] = [['', 'Relevance: Best match'], ['popularity', 'Popularity: Most popular'], ...OTHER_SORTS]
 
-/** Small sort icon (two arrows) drawn for this project. */
+/** Filled sort icon drawn for this project: a down arrow next to four shrinking bars. Size comes from --sort-icon. */
 function SortIcon() {
   return (
-    <svg className="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M7 4v16M7 4 3.5 7.5M7 4l3.5 3.5M17 20V4M17 20l-3.5-3.5M17 20l3.5-3.5" />
+    <svg className="sort-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+      <path d="M5 2h2v10.6l2.3-2.3 1.4 1.4L6 16.4l-4.7-4.7 1.4-1.4L5 12.6V2z" />
+      <rect x="12" y="3" width="8" height="2.4" />
+      <rect x="12" y="7.6" width="6.4" height="2.4" />
+      <rect x="12" y="12.2" width="4.8" height="2.4" />
+      <rect x="12" y="16.8" width="3.2" height="2.4" />
     </svg>
   )
 }
