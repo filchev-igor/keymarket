@@ -54,23 +54,43 @@ class MarketplaceSeeder extends Seeder
         ['LootLane', 4.4], ['QuickKeys', 4.5], ['StarMarket', 4.3],
     ];
 
+    /** Arbitrary constant used as the Postgres advisory-lock id for seeding. */
+    private const LOCK_ID = 727001;
+
+    /**
+     * Idempotent: running it twice (or two containers starting at once) never duplicates anything.
+     * - An advisory lock makes concurrent seeders take turns; the second one then finds the data already there.
+     * - Sellers are matched by name, products by slug and banners by "table is empty".
+     * - Offers and keys are only created together with a NEW product, so a restart can never
+     *   re-create keys or bring back stock that was already sold.
+     * Everything runs in one transaction, so a crash leaves nothing half-seeded.
+     */
     public function run(): void
     {
-        if (Product::exists()) {
-            return; // already seeded
-        }
-
         mt_srand(42); // fixed seed: same catalog everywhere
 
         DB::transaction(function () {
-            $sellers = collect(self::SELLERS)->map(fn ($s) => Seller::create(['name' => $s[0], 'rating' => $s[1]]));
+            if (DB::getDriverName() === 'pgsql') {
+                DB::select('SELECT pg_advisory_xact_lock(?)', [self::LOCK_ID]); // released at commit
+            }
+
+            $sellers = collect(self::SELLERS)->map(
+                fn ($s) => Seller::firstOrCreate(['name' => $s[0]], ['rating' => $s[1]])
+            );
+
+            $existing = Product::pluck('slug')->flip(); // one query instead of one per product
 
             foreach (self::GAMES as $i => [$name, $genre, $basePrice, $year, $description]) {
                 foreach ([$i % 8, ($i + 3) % 8] as $variantIndex) {
                     [$platform, $region] = self::VARIANTS[$variantIndex];
 
+                    $slug = Str::slug("$name $platform $region");
+                    if ($existing->has($slug)) {
+                        continue; // already seeded: leave its offers and keys alone
+                    }
+
                     $product = Product::create([
-                        'slug' => Str::slug("$name $platform $region"),
+                        'slug' => $slug,
                         'name' => $name,
                         'platform' => $platform,
                         'region' => $region,
@@ -85,7 +105,9 @@ class MarketplaceSeeder extends Seeder
                 }
             }
 
-            $this->createBanners();
+            if (Banner::count() === 0) {
+                $this->createBanners();
+            }
         });
     }
 
@@ -114,7 +136,11 @@ class MarketplaceSeeder extends Seeder
         }
     }
 
-    /** XXXXX-XXXXX-XXXXX from an alphabet without look-alike characters. Uniqueness is enforced by the DB. */
+    /**
+     * XXXXX-XXXXX-XXXXX from an alphabet without look-alike characters.
+     * Uses random_int (not the seeded mt_rand) so keys never repeat between runs;
+     * the unique index on game_keys.code is the final guarantee.
+     */
     private function makeKey(): string
     {
         static $used = [];
@@ -125,7 +151,7 @@ class MarketplaceSeeder extends Seeder
             foreach (range(1, 3) as $_) {
                 $group = '';
                 foreach (range(1, 5) as $__) {
-                    $group .= $alphabet[mt_rand(0, strlen($alphabet) - 1)];
+                    $group .= $alphabet[random_int(0, strlen($alphabet) - 1)];
                 }
                 $groups[] = $group;
             }
