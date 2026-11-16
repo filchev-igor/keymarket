@@ -57,6 +57,10 @@
   --nav-row: 50px;          /* full-width navigation row */
   --search-h: 55px;
   --search-w: 530px;
+  --search-icon: 24px;      /* magnifier */
+  --search-clear-icon: 14px;/* clear-text cross */
+  --search-pad-left: 48px;  /* room for the magnifier */
+  --search-clear-w: 44px;   /* room for the clear button */
   --sidebar-w: 220px;
   --btn-h: 35px;
   --btn-h-lg: 40px;
@@ -186,12 +190,19 @@ label { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; fo
 .logo-mark { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50% 50% 50% 8px; background: linear-gradient(135deg, var(--yellow), var(--teal)); color: var(--on-teal); font-size: 21px; font-weight: 800; letter-spacing: 0; }
 
 .search { display: flex; flex: 0 1 var(--search-w); position: relative; background: var(--search-bg); border: 1px solid var(--border); }
-.search input { height: var(--search-h); padding: 0 16px 0 40px; background: transparent; box-shadow: none; border-radius: 0; font-size: var(--fs-search); font-weight: 800; }
+.search input { height: var(--search-h); padding: 0 var(--search-clear-w) 0 var(--search-pad-left); background: transparent; box-shadow: none; border-radius: 0; font-size: var(--fs-search); font-weight: 800; }
+/* One clear button only: hide the browser's own cancel cross in search fields */
+.search input::-webkit-search-cancel-button, .search input::-webkit-search-decoration { -webkit-appearance: none; appearance: none; display: none; }
 .search input::placeholder { font-weight: 800; }
 .search:focus-within { border-color: var(--yellow); }
 .search input:focus { outline: none; }
-.search button { position: absolute; left: 0; top: 0; height: var(--search-h); width: 40px; background: none; border: 0; color: var(--muted); display: grid; place-items: center; cursor: pointer; padding: 0; }
-.search button:hover { color: var(--text); }
+/* Magnifier on the left, clear cross on the right (only when there is text) */
+.search-submit, .search-clear { position: absolute; top: 0; height: var(--search-h); background: none; border: 0; color: var(--muted); display: grid; place-items: center; cursor: pointer; padding: 0; }
+.search-submit { left: 0; width: var(--search-pad-left); }
+.search-clear { right: 0; width: var(--search-clear-w); }
+.search-submit:hover, .search-clear:hover { color: var(--text); }
+.search-icon { width: var(--search-icon); height: var(--search-icon); }
+.search-clear-icon { width: var(--search-clear-icon); height: var(--search-clear-icon); }
 
 .nav { display: flex; align-items: center; gap: 22px; margin-left: auto; font-size: 15px; font-weight: 800; }
 .currency { color: var(--muted); font-weight: 800; }

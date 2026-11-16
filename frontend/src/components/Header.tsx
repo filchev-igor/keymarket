@@ -1,15 +1,25 @@
-import { useState, type FormEvent } from 'react'
+import { useRef, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useFetch } from '../api'
 import { useAuth } from '../auth'
 import { useCart } from '../cart'
 import type { Filters } from '../types'
 
+/** Thin-line magnifier, drawn for this project; its size comes from --search-icon. */
 function SearchIcon() {
   return (
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-      <circle cx="11" cy="11" r="7" />
-      <path d="m20 20-3.5-3.5" />
+    <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="10.5" cy="10.5" r="8" />
+      <path d="m16.5 16.5 5.5 5.5" />
+    </svg>
+  )
+}
+
+/** Small cross for the "clear search text" button; its size comes from --search-clear-icon. */
+function ClearIcon() {
+  return (
+    <svg className="search-clear-icon" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+      <path d="m2 2 10 10M12 2 2 12" />
     </svg>
   )
 }
@@ -30,6 +40,7 @@ export default function Header() {
   const navigate = useNavigate()
   const [params] = useSearchParams()
   const [term, setTerm] = useState(params.get('q') ?? '')
+  const inputRef = useRef<HTMLInputElement>(null)
   // The platform links of the second row come from the API, so they always match the catalog.
   const filters = useFetch<Filters>('/filters')
 
@@ -50,16 +61,35 @@ export default function Header() {
         </Link>
 
         <form className="search" onSubmit={search} role="search">
-          <button type="submit" aria-label="Search">
+          <button type="submit" className="search-submit" aria-label="Search">
             <SearchIcon />
           </button>
           <input
+            ref={inputRef}
             type="search"
+            name="text"
             value={term}
             onChange={(e) => setTerm(e.target.value)}
             placeholder="Search for games, e.g. cyber drift"
             aria-label="Search games"
+            autoComplete="off"
+            autoCorrect="off"
           />
+          {/* Appears only when there is text; clears it and keeps the focus in the box */}
+          {term && (
+            <button
+              type="button"
+              className="search-clear"
+              aria-label="Clear search text"
+              title="Clear search text"
+              onClick={() => {
+                setTerm('')
+                inputRef.current?.focus()
+              }}
+            >
+              <ClearIcon />
+            </button>
+          )}
         </form>
 
         <nav className="nav">
