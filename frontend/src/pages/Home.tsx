@@ -7,7 +7,7 @@ import type { Banner, Filters, Product } from '../types'
 
 // Each block fetches its own endpoint; the page only displays what comes back.
 
-function Banners() {
+const Banners = () => {
   const { data, loading, error } = useFetch<{ data: Banner[] }>('/home/banners')
   return (
     <section className="banners">
@@ -30,14 +30,14 @@ function Banners() {
 // Display order of the platform entries; a platform that is not listed here still shows up, after these.
 const PLATFORM_ORDER = ['PlayStation', 'Xbox', 'Steam', 'Nintendo', 'Epic Games']
 
-function byPlatformOrder(a: string, b: string): number {
+const byPlatformOrder = (a: string, b: string): number => {
   const rank = (p: string) =>
     PLATFORM_ORDER.includes(p) ? PLATFORM_ORDER.indexOf(p) : PLATFORM_ORDER.length
   return rank(a) - rank(b) || a.localeCompare(b)
 }
 
 /** Horizontal category strip under the hero: "Games", then one entry per platform taken from the catalog. */
-function CategoryStrip() {
+const CategoryStrip = () => {
   const { data } = useFetch<Filters>('/filters')
   const items = [
     { label: 'Games', to: '/store', icon: 'grid' as const },
@@ -61,7 +61,7 @@ function CategoryStrip() {
   )
 }
 
-function ProductBlock({ title, path, more }: { title: string; path: string; more: string }) {
+const ProductBlock = ({ title, path, more }: { title: string; path: string; more: string }) => {
   const { data, loading, error } = useFetch<{ data: Product[] }>(path)
   return (
     <section>
@@ -85,7 +85,7 @@ function ProductBlock({ title, path, more }: { title: string; path: string; more
   )
 }
 
-function Genres() {
+const Genres = () => {
   const { data } = useFetch<Filters>('/filters')
   if (!data) return null
   return (
@@ -104,7 +104,7 @@ function Genres() {
   )
 }
 
-export default function Home() {
+const Home = () => {
   return (
     <div className="container stack">
       <Banners />
@@ -115,3 +115,5 @@ export default function Home() {
     </div>
   )
 }
+
+export default Home

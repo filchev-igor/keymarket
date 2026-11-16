@@ -26,7 +26,7 @@ const common = {
   'aria-hidden': true,
 } as const
 
-export default function Icon({ name }: { name: IconName }) {
+const Icon = ({ name }: { name: IconName }) => {
   switch (name) {
     case 'grid':
       return (
@@ -119,8 +119,10 @@ export default function Icon({ name }: { name: IconName }) {
 }
 
 /** Which icon stands for a platform (generic shapes, not the platforms' logos). */
-export function platformIcon(platform: string): IconName {
+export const platformIcon = (platform: string): IconName => {
   if (/steam|epic|pc/i.test(platform)) return 'monitor'
   if (/nintendo/i.test(platform)) return 'handheld'
   return 'gamepad'
 }
+
+export default Icon

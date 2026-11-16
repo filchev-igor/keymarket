@@ -4,7 +4,7 @@ import { ApiError } from '../api'
 import { useAuth } from '../auth'
 
 /** One form for both sign in and register. */
-export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
+const AuthForm = ({ mode }: { mode: 'login' | 'register' }) => {
   const { login, register } = useAuth()
   const navigate = useNavigate()
   const [params] = useSearchParams()
@@ -18,7 +18,7 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({})
   const [busy, setBusy] = useState(false)
 
-  async function submit(e: FormEvent) {
+  const submit = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
     setFieldErrors({})
@@ -103,3 +103,5 @@ export default function AuthForm({ mode }: { mode: 'login' | 'register' }) {
     </div>
   )
 }
+
+export default AuthForm

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-export default function Footer() {
+const Footer = () => {
   return (
     <>
       <div className="pay-strip">
@@ -58,3 +58,5 @@ export default function Footer() {
     </>
   )
 }
+
+export default Footer

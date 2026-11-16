@@ -20,7 +20,7 @@ interface CartState {
 
 const CartContext = createContext<CartState | null>(null)
 
-function load(): CartItem[] {
+const load = (): CartItem[] => {
   try {
     const parsed = JSON.parse(localStorage.getItem(CART_KEY) ?? '[]')
     return Array.isArray(parsed) ? parsed : []
@@ -29,7 +29,7 @@ function load(): CartItem[] {
   }
 }
 
-export function CartProvider({ children }: { children: ReactNode }) {
+export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>(load)
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }
 
-export function useCart(): CartState {
+export const useCart = (): CartState => {
   const ctx = useContext(CartContext)
   if (!ctx) throw new Error('useCart must be used inside CartProvider')
   return ctx

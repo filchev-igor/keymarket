@@ -10,7 +10,7 @@ import { OrderDetail, OrderList } from './pages/Orders'
 import ProductPage from './pages/ProductPage'
 import Store from './pages/Store'
 
-export default function App() {
+const App = () => {
   return (
     <>
       <Header />
@@ -60,3 +60,5 @@ export default function App() {
     </>
   )
 }
+
+export default App

@@ -9,7 +9,7 @@ import { formatPrice } from '../format'
 import type { CartPreview } from '../types'
 
 /** Loads current prices and availability for the cart from the server. */
-export function useCartPreview() {
+export const useCartPreview = () => {
   const { items } = useCart()
   const [preview, setPreview] = useState<CartPreview | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -33,7 +33,7 @@ export function useCartPreview() {
   return { preview, error }
 }
 
-export default function Cart() {
+const Cart = () => {
   const cart = useCart()
   const navigate = useNavigate()
   const { preview, error } = useCartPreview()
@@ -156,3 +156,5 @@ export default function Cart() {
     </div>
   )
 }
+
+export default Cart

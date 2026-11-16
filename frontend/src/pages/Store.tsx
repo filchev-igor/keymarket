@@ -22,7 +22,7 @@ const SORTS_SEARCHING: [string, string][] = [
 ]
 
 /** Filled sort icon drawn for this project: a down arrow next to four shrinking bars. Size comes from --sort-icon. */
-function SortIcon() {
+const SortIcon = () => {
   return (
     <svg className="sort-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
       <path d="M5 2h2v10.6l2.3-2.3 1.4 1.4L6 16.4l-4.7-4.7 1.4-1.4L5 12.6V2z" />
@@ -35,7 +35,7 @@ function SortIcon() {
 }
 
 /** [1, '…', 4, 5, 6, '…', 20]: always the first and last page and the neighbours of the current one. */
-function pageList(page: number, last: number): (number | '…')[] {
+const pageList = (page: number, last: number): (number | '…')[] => {
   const pages = new Set([1, last, page - 1, page, page + 1].filter((p) => p >= 1 && p <= last))
   const sorted = [...pages].sort((a, b) => a - b)
   const out: (number | '…')[] = []
@@ -53,7 +53,7 @@ const SEARCH_FROM = 8 // a list longer than this gets a small search box
  * Checkbox-style list of one filter's values. A long list has a search box, shows the first few values and an
  * "N more" / "Show less" link with a chevron. Searching shows every match; the selected value is always visible.
  */
-function OptionList({
+const OptionList = ({
   name,
   label,
   options,
@@ -65,7 +65,7 @@ function OptionList({
   options: string[]
   selected: string | null
   onPick: (value: string) => void
-}) {
+}) => {
   const [expanded, setExpanded] = useState(false)
   const [query, setQuery] = useState('')
   const needle = query.trim().toLowerCase()
@@ -124,7 +124,7 @@ function OptionList({
 }
 
 /** A collapsible filter group: a title row (with a yellow count badge when something is selected) and its content. */
-function FilterGroup({
+const FilterGroup = ({
   title,
   count = 0,
   children,
@@ -132,7 +132,7 @@ function FilterGroup({
   title: string
   count?: number
   children: ReactNode
-}) {
+}) => {
   return (
     <details className="filter-group" open>
       <summary>
@@ -151,7 +151,7 @@ function FilterGroup({
 }
 
 // The URL is the single source of truth for filters, so results are shareable and the back button works.
-export default function Store() {
+const Store = () => {
   const [params, setParams] = useSearchParams()
   const [filtersOpen, setFiltersOpen] = useState(false) // only used on phones, where the sidebar is collapsed
   const filters = useFetch<Filters>('/filters')
@@ -167,7 +167,7 @@ export default function Store() {
     params.get('max_price') ? String(Number(params.get('max_price')) / 100) : '',
   )
 
-  function update(changes: Record<string, string>) {
+  const update = (changes: Record<string, string>) => {
     const next = new URLSearchParams(params)
     for (const [key, value] of Object.entries(changes)) {
       if (value) next.set(key, value)
@@ -184,7 +184,7 @@ export default function Store() {
   }
 
   // The price range applies when you press Enter or leave a field (there is no Apply button), only if it changed.
-  function applyPrice() {
+  const applyPrice = () => {
     const minCents = toCents(min)
     const maxCents = toCents(max)
     if (
@@ -195,11 +195,11 @@ export default function Store() {
     update({ min_price: minCents, max_price: maxCents })
   }
 
-  function applyPriceOnEnter(e: KeyboardEvent<HTMLInputElement>) {
+  const applyPriceOnEnter = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') applyPrice()
   }
 
-  function clearAll() {
+  const clearAll = () => {
     setMin('')
     setMax('')
     setParams(q ? { q } : {})
@@ -227,7 +227,7 @@ export default function Store() {
     active.push({ label: 'Price', value, params: ['min_price', 'max_price'] })
   }
 
-  function removeFilter(names: string[]) {
+  const removeFilter = (names: string[]) => {
     if (names.includes('min_price')) {
       setMin('')
       setMax('')
@@ -400,3 +400,5 @@ export default function Store() {
     </div>
   )
 }
+
+export default Store

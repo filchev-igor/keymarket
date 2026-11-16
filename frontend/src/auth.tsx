@@ -12,7 +12,7 @@ interface AuthState {
 
 const AuthContext = createContext<AuthState | null>(null)
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(() => getToken() !== null)
 
@@ -25,7 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .finally(() => setLoading(false))
   }, [])
 
-  async function authenticate(path: string, body: object) {
+  const authenticate = async (path: string, body: object) => {
     const r = await api<{ user: User; token: string }>(path, { method: 'POST', body })
     setToken(r.token)
     setUser(r.user)
@@ -50,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
-export function useAuth(): AuthState {
+export const useAuth = (): AuthState => {
   const ctx = useContext(AuthContext)
   if (!ctx) throw new Error('useAuth must be used inside AuthProvider')
   return ctx

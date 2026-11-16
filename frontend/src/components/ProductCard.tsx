@@ -5,7 +5,7 @@ import { formatPrice } from '../format'
 import type { Product } from '../types'
 
 /** Generated cover (no copyrighted images): a gradient from the product's colour with its name. */
-export function Cover({
+export const Cover = ({
   name,
   color,
   thumb = false,
@@ -13,7 +13,7 @@ export function Cover({
   name: string
   color: string
   thumb?: boolean
-}) {
+}) => {
   return (
     <div
       className={`cover${thumb ? ' thumb' : ''}`}
@@ -26,13 +26,13 @@ export function Cover({
   )
 }
 
-export default function ProductCard({ product }: { product: Product }) {
+const ProductCard = ({ product }: { product: Product }) => {
   const cart = useCart()
   const [added, setAdded] = useState(false)
   const url = `/product/${product.slug}`
 
   // The hover button buys the cheapest in-stock offer (the one whose price is shown on the card).
-  function add() {
+  const add = () => {
     if (product.best_offer_id === null) return
     cart.add(product.best_offer_id)
     setAdded(true)
@@ -88,3 +88,5 @@ export default function ProductCard({ product }: { product: Product }) {
     </div>
   )
 }
+
+export default ProductCard

@@ -4,7 +4,7 @@ import { useAuth } from '../auth'
 import Spinner from './Spinner'
 
 /** Wraps pages that need a signed-in user (checkout, orders). Guests are sent to sign in and then come back. */
-export default function RequireAuth({ children }: { children: ReactNode }) {
+const RequireAuth = ({ children }: { children: ReactNode }) => {
   const { user, loading } = useAuth()
   const location = useLocation()
 
@@ -17,3 +17,5 @@ export default function RequireAuth({ children }: { children: ReactNode }) {
   if (!user) return <Navigate to={`/login?next=${encodeURIComponent(location.pathname)}`} replace />
   return children
 }
+
+export default RequireAuth

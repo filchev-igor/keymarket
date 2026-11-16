@@ -1,7 +1,7 @@
 const STEPS = ['Cart', 'Payment', 'Receive item']
 
 /** The three-step purchase header (cart, payment, receive item). `step` is 1-3. */
-export default function Stepper({ step }: { step: 1 | 2 | 3 }) {
+const Stepper = ({ step }: { step: 1 | 2 | 3 }) => {
   return (
     <ol className="steps" aria-label="Purchase steps" style={{ listStyle: 'none', padding: 0 }}>
       {STEPS.map((label, i) => {
@@ -20,3 +20,5 @@ export default function Stepper({ step }: { step: 1 | 2 | 3 }) {
     </ol>
   )
 }
+
+export default Stepper

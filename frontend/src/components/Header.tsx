@@ -7,7 +7,7 @@ import type { Filters } from '../types'
 import Icon from './Icon'
 
 /** Thin-line magnifier, drawn for this project; its size comes from --search-icon. */
-function SearchIcon() {
+const SearchIcon = () => {
   return (
     <svg
       className="search-icon"
@@ -26,7 +26,7 @@ function SearchIcon() {
 }
 
 /** Person icon (supplied artwork, filled, 24x25 grid); its width comes from --account-icon and its height follows. */
-function UserIcon() {
+const UserIcon = () => {
   return (
     <svg className="account-icon" fill="none" viewBox="0 0 24 25" aria-hidden="true">
       <path
@@ -40,7 +40,7 @@ function UserIcon() {
 }
 
 /** Small cross for the "clear search text" button; its size comes from --search-clear-icon. */
-function ClearIcon() {
+const ClearIcon = () => {
   return (
     <svg
       className="search-clear-icon"
@@ -57,7 +57,7 @@ function ClearIcon() {
 }
 
 /** Cart outline (supplied artwork, 16x16 grid, 1px strokes); its size comes from --cart-icon. */
-function CartIcon() {
+const CartIcon = () => {
   return (
     <svg className="cart-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <path
@@ -92,7 +92,7 @@ function CartIcon() {
   )
 }
 
-export default function Header() {
+const Header = () => {
   const { user, logout } = useAuth()
   const { count } = useCart()
   const navigate = useNavigate()
@@ -116,7 +116,7 @@ export default function Header() {
   const filters = useFetch<Filters>('/filters')
 
   // The search box is in the header so it works from every page; results show in the store.
-  function search(e: FormEvent) {
+  const search = (e: FormEvent) => {
     e.preventDefault()
     const q = term.trim()
     navigate(q ? `/store?q=${encodeURIComponent(q)}` : '/store')
@@ -238,3 +238,5 @@ export default function Header() {
     </header>
   )
 }
+
+export default Header

@@ -13,7 +13,7 @@ const APPROVED_CARD = '4242424242424242'
 const DECLINED_CARD = '4000000000000002' // ends in 0002: the simulated payment declines it
 
 /** Keeps digits only (so pasted spaces, dashes and look-alike characters can't sneak in) and groups them by 4. */
-function formatCard(value: string): string {
+const formatCard = (value: string): string => {
   return (
     value
       .replace(/\D/g, '')
@@ -22,7 +22,7 @@ function formatCard(value: string): string {
   ).join(' ')
 }
 
-export default function Checkout() {
+const Checkout = () => {
   const cart = useCart()
   const navigate = useNavigate()
   const { preview, error: previewError } = useCartPreview()
@@ -31,7 +31,7 @@ export default function Checkout() {
   const [error, setError] = useState<string | null>(null)
   const [paying, setPaying] = useState(false)
 
-  async function pay(e: FormEvent) {
+  const pay = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
     setPaying(true)
@@ -188,3 +188,5 @@ export default function Checkout() {
     </div>
   )
 }
+
+export default Checkout

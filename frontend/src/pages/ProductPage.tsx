@@ -8,7 +8,7 @@ import Status from '../components/Status'
 import { formatPrice } from '../format'
 import type { Offer, ProductDetail } from '../types'
 
-export default function ProductPage() {
+const ProductPage = () => {
   const { slug } = useParams()
   const { data, loading, error } = useFetch<{ data: ProductDetail }>(`/products/${slug}`)
   const cart = useCart()
@@ -26,12 +26,12 @@ export default function ProductPage() {
   const product = data!.data
   const [best, ...others] = product.offers
 
-  function add(offer: Offer) {
+  const add = (offer: Offer) => {
     cart.add(offer.id)
     setAdded(offer.id)
   }
 
-  function buyNow(offer: Offer) {
+  const buyNow = (offer: Offer) => {
     cart.add(offer.id)
     navigate('/cart')
   }
@@ -210,3 +210,5 @@ export default function ProductPage() {
     </div>
   )
 }
+
+export default ProductPage

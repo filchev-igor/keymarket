@@ -6,7 +6,7 @@ import Stepper from '../components/Stepper'
 import { formatDate, formatPrice } from '../format'
 import type { Order, OrderSummary } from '../types'
 
-export function OrderList() {
+export const OrderList = () => {
   const { data, loading, error } = useFetch<{ data: OrderSummary[] }>('/orders')
   return (
     <div className="container">
@@ -40,7 +40,7 @@ export function OrderList() {
   )
 }
 
-export function OrderDetail() {
+export const OrderDetail = () => {
   const { id } = useParams()
   const { data, loading, error } = useFetch<{ data: Order }>(`/orders/${id}`)
   const order = data?.data
