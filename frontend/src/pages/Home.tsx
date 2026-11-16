@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useFetch } from '../api'
 import Icon from '../components/Icon'
@@ -5,6 +6,7 @@ import { platformIcon } from '../components/platformIcon'
 import ProductCard from '../components/ProductCard'
 import Status from '../components/Status'
 import type { Banner, Filters, Product } from '../types'
+import { useColumns } from '../useColumns'
 
 // Each block fetches its own endpoint; the page only displays what comes back.
 
@@ -62,24 +64,37 @@ const CategoryStrip = () => {
   )
 }
 
-const ProductBlock = ({ title, path, more }: { title: string; path: string; more: string }) => {
+const ProductBlock = ({ title, path }: { title: string; path: string }) => {
   const { data, loading, error } = useFetch<{ data: Product[] }>(path)
+  const gridRef = useRef<HTMLDivElement>(null)
+  // The first row shows exactly as many cards as fit across the screen (no sideways scroll bar);
+  // "Show all" reveals the rest in place.
+  const perRow = useColumns(gridRef)
+  const [expanded, setExpanded] = useState(false)
+  const products = data?.data ?? []
+  const shown = expanded ? products : products.slice(0, perRow)
+
   return (
     <section>
       <div className="section-head section-title">
         <h2>{title}</h2>
       </div>
       <Status loading={loading} error={error} />
-      <div className="row-scroll">
-        {data?.data.map((p) => (
+      <div className="grid" ref={gridRef}>
+        {shown.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}
       </div>
-      {data && data.data.length > 0 && (
+      {products.length > perRow && (
         <div className="show-all">
-          <Link to={more} className="btn">
-            Show all
-          </Link>
+          <button
+            type="button"
+            className="btn"
+            aria-expanded={expanded}
+            onClick={() => setExpanded((e) => !e)}
+          >
+            {expanded ? 'Show less' : 'Show all'}
+          </button>
         </div>
       )}
     </section>
@@ -110,8 +125,8 @@ const Home = () => {
     <div className="container stack">
       <Banners />
       <CategoryStrip />
-      <ProductBlock title="Best sellers" path="/home/best-sellers" more="/store?sort=popularity" />
-      <ProductBlock title="Hot deals" path="/home/deals" more="/store?sort=discount" />
+      <ProductBlock title="Best sellers" path="/home/best-sellers" />
+      <ProductBlock title="Hot deals" path="/home/deals" />
       <Genres />
     </div>
   )
