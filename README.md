@@ -110,7 +110,6 @@ Deliberately **not** tested, and why:
 ## What I would add next
 
 - **TanStack Query** for server data: caching, request de-duplication and retries, replacing the small hand-written `useFetch` hook.
-- **ESLint and Prettier** for the frontend, with the rules enforced in CI (only the template's `oxlint` runs today).
 - **Laravel Pint** to keep the PHP code style consistent automatically.
 - **GitHub Actions CI** that runs the backend tests, the frontend type-check and the production build on every pull request.
 - **A search suggestions dropdown** under the header search box, on top of the existing typo-tolerant search.
