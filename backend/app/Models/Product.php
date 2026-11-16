@@ -31,21 +31,21 @@ class Product extends Model
     public function scopeWithBestOffer(Builder $query): Builder
     {
         $best = <<<'SQL'
-            SELECT DISTINCT ON (s.product_id) s.product_id, s.price, s.old_price,
+            SELECT DISTINCT ON (s.product_id) s.product_id, s.offer_id, s.price, s.old_price,
                    COUNT(*) OVER (PARTITION BY s.product_id) AS offers_count
             FROM (
-                SELECT o.product_id, o.price, o.old_price
+                SELECT o.product_id, o.id AS offer_id, o.price, o.old_price
                 FROM offers o
                 WHERE EXISTS (
                     SELECT 1 FROM game_keys k WHERE k.offer_id = o.id AND k.order_item_id IS NULL
                 )
             ) s
-            ORDER BY s.product_id, s.price
+            ORDER BY s.product_id, s.price, s.offer_id
         SQL;
 
         return $query
             ->leftJoinSub($best, 'best', 'best.product_id', '=', 'products.id')
-            ->select('products.*', 'best.price', 'best.old_price', 'best.offers_count')
+            ->select('products.*', 'best.price', 'best.old_price', 'best.offers_count', 'best.offer_id AS best_offer_id')
             ->selectRaw(self::DISCOUNT_SQL.' AS discount_percent');
     }
 }

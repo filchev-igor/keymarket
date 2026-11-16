@@ -23,7 +23,7 @@ Payment is **simulated and no real money is involved**: any 12-19 digit card num
 - **Cart and checkout:** cart kept in the browser, priced by the server; checkout requires sign-in and issues one unique key per purchased unit in a single transaction (a key is never sold twice).
 - **Auth:** register, sign in, sign out with Laravel Sanctum tokens; checkout and order history are protected.
 - **Order history:** every order with its keys.
-- **Styling:** dark-purple marketplace look from design tokens (CSS variables) based on the brand colour `#4618AC`. No Eneba screenshots were used, so it is a close-in-spirit look, not a pixel copy; no Eneba logo, images or code are used.
+- **Styling:** an Eneba-style look driven entirely by design tokens (CSS variables in `frontend/src/index.css`): the purple palette, yellow action buttons, teal tags, type scale, radii and layout proportions were measured from the public site. Header with search and a second navigation row, left filter sidebar, product cards with a platform strip and a teal sale tag, a product page with a right-hand purchase box and a sellers list, a 3-step cart/checkout and a footer, all responsive down to phone width. The font is Montserrat, self-hosted from the npm package `@fontsource-variable/montserrat` (a free font similar to the one the reference uses; nothing is loaded from a CDN). The logo is a placeholder wordmark of our own, covers are generated gradients, and no Eneba logo, images, text or code are used.
 
 API contract: [`API.md`](API.md). Deployment guide: [`DEPLOY.md`](DEPLOY.md).
 
@@ -105,7 +105,7 @@ Deliberately **not** tested, and why:
 - The cart lives in the browser (localStorage); the server only prices it.
 - Game covers are generated gradients, not images.
 - The API runs on PHP's built-in server inside Docker, which is enough for a free-tier demo.
-- The Eneba look is approximated without screenshots.
+- The Eneba look is an approximation: no cashback, wishlist, language switcher or payment-logo strip (those features do not exist here; the teal tag on cards shows the real discount), and the filter sidebar selects one value per group because the API accepts one.
 
 ## Privacy note
 

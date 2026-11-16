@@ -85,3 +85,12 @@ Must include: how to run locally, architecture and data model overview, what was
 5. Remove leftovers: test files, debug output, unused code.
 6. Remind me to EXPORT THE FULL CHAT HISTORY of this whole work (prompts and responses, unedited): try `/export` in Claude Code (check `/help` if the command differs), save it as `docs/ai-log.md`, commit and push it through a branch and PR like everything else. Review it for secrets first. If the work was split across several sessions, export each one.
 7. Remind me what to send to internship@eneba.com: my full name, the GitHub link(s), the public URL, the chat history file (or link), and my CV in English.
+
+## When to run checks
+- Between commits: do not run the full test suite or builds. Fast feedback comes from the dev server.
+- Before opening a PR: run the frontend type-check and production build; run the backend test suite only if backend code changed.
+- Before merging: re-run whatever the latest changes affect. Never merge with a failing check.
+- After merging: tell me to confirm the Vercel and Render deploys and a quick live check.
+
+## Design references
+- Do not read or take screenshots unless the user asks. Use the .md files in design/ instead.

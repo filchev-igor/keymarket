@@ -5,7 +5,7 @@ import { useCart } from '../cart'
 import { Cover } from '../components/ProductCard'
 import Status from '../components/Status'
 import { formatPrice } from '../format'
-import type { ProductDetail } from '../types'
+import type { Offer, ProductDetail } from '../types'
 
 export default function ProductPage() {
   const { slug } = useParams()
@@ -23,66 +23,122 @@ export default function ProductPage() {
     )
   }
   const product = data!.data
+  const [best, ...others] = product.offers
 
-  return (
-    <div className="container stack">
-      <div className="product-head">
-        <Cover name={product.name} color={product.cover_color} />
+  function add(offer: Offer) {
+    cart.add(offer.id)
+    setAdded(offer.id)
+  }
+
+  function buyNow(offer: Offer) {
+    cart.add(offer.id)
+    navigate('/cart')
+  }
+
+  const offerRow = (offer: Offer, isBest: boolean) => (
+    <div key={offer.id} className={`offer${isBest ? ' best' : ''}`}>
+      <div className="seller">
+        <span className="seller-avatar" aria-hidden="true">{offer.seller.name.charAt(0)}</span>
         <div>
-          <h1>{product.name}</h1>
-          <p className="muted">
-            {product.platform} · {product.region} · {product.genre}
-            {product.release_date && ` · Released ${new Date(product.release_date).getFullYear()}`}
-          </p>
-          <p>{product.description}</p>
-          {product.price !== null && (
-            <p className="price-row">
-              {product.old_price && <s className="muted">{formatPrice(product.old_price)}</s>}
-              <strong className="price big">From {formatPrice(product.price)}</strong>
-              {product.discount_percent ? <span className="discount inline">-{product.discount_percent}%</span> : null}
-            </p>
-          )}
+          <strong>
+            {offer.seller.name} {isBest && <span className="tag-teal">Lowest price</span>}
+          </strong>
+          <span className="muted small">
+            <span className="stars">★ {offer.seller.rating.toFixed(1)}</span> · {offer.stock} keys in stock
+          </span>
         </div>
       </div>
+      <div className="price-line">
+        {offer.old_price && <s className="old-price">{formatPrice(offer.old_price)}</s>}
+        <strong className="price">{formatPrice(offer.price)}</strong>
+      </div>
+      <div className="actions">
+        <button className="btn btn-small" onClick={() => add(offer)}>
+          {added === offer.id ? 'Added ✓' : 'Add to cart'}
+        </button>
+      </div>
+    </div>
+  )
 
-      <section>
-        <h2>Offers from {product.offers.length} sellers</h2>
-        {product.offers.length === 0 && <p>This product is currently out of stock.</p>}
-        <div className="offers">
-          {product.offers.map((offer, i) => (
-            <div key={offer.id} className="offer">
-              <div>
-                <strong>{offer.seller.name}</strong> {i === 0 && <span className="tag">Best price</span>}
-                <p className="muted">★ {offer.seller.rating.toFixed(1)} · {offer.stock} keys in stock</p>
+  return (
+    <div className="container">
+      <nav className="crumbs" aria-label="Breadcrumb">
+        <Link to="/">Home</Link>
+        <Link to="/store">Store</Link>
+        <Link to={`/store?platform=${encodeURIComponent(product.platform)}`}>{product.platform}</Link>
+        <span>{product.name}</span>
+      </nav>
+
+      <div className="pdp">
+        <div>
+          <div className="pdp-head">
+            <Cover name={product.name} color={product.cover_color} />
+            <div>
+              <h1 className="pdp-title">{product.name} ({product.platform}) key</h1>
+              <div className="pdp-meta">
+                <span className="chip">{product.platform}</span>
+                <span className="chip">{product.region}</span>
+                <span className="chip">{product.genre}</span>
               </div>
-              <div className="price-row">
-                {offer.old_price && <s className="muted">{formatPrice(offer.old_price)}</s>}
-                <strong className="price">{formatPrice(offer.price)}</strong>
-              </div>
-              <div className="actions">
-                <button
-                  className="btn"
-                  onClick={() => {
-                    cart.add(offer.id)
-                    setAdded(offer.id)
-                  }}
-                >
-                  {added === offer.id ? 'Added ✓' : 'Add to cart'}
-                </button>
-                <button
-                  className="btn btn-outline"
-                  onClick={() => {
-                    cart.add(offer.id)
-                    navigate('/cart')
-                  }}
-                >
-                  Buy now
-                </button>
-              </div>
+              <p>{product.description}</p>
+              <dl className="facts" style={{ margin: 0 }}>
+                <div className="fact"><dt>Region</dt><dd>{product.region}</dd></div>
+                <div className="fact"><dt>Platform</dt><dd>{product.platform}</dd></div>
+                <div className="fact"><dt>Genre</dt><dd>{product.genre}</dd></div>
+                {product.release_date && <div className="fact"><dt>Released</dt><dd>{new Date(product.release_date).getFullYear()}</dd></div>}
+                <div className="fact"><dt>Delivery</dt><dd>Digital key shown right after payment</dd></div>
+              </dl>
             </div>
-          ))}
+          </div>
+
+          <section className="offers-panel" id="offers">
+            {product.offers.length === 0 ? (
+              <>
+                <h2 className="subhead">Offers</h2>
+                <p>This product is currently out of stock.</p>
+              </>
+            ) : (
+              <>
+                <h2 className="subhead">Recommended offer</h2>
+                <div className="offers">{offerRow(best, true)}</div>
+                {others.length > 0 && (
+                  <>
+                    <h2 className="subhead">{others.length} other {others.length === 1 ? 'offer' : 'offers'}</h2>
+                    <div className="offers">{others.map((o) => offerRow(o, false))}</div>
+                  </>
+                )}
+              </>
+            )}
+          </section>
         </div>
-      </section>
+
+        {best && (
+          <aside className="buybox" aria-label="Purchase">
+            <h2>Best price</h2>
+            <div className="price-row">
+              <strong className="price big">{formatPrice(best.price)}</strong>
+              {best.old_price && <s className="old-price">{formatPrice(best.old_price)}</s>}
+              {product.discount_percent ? <span className="tag-teal">-{product.discount_percent}%</span> : null}
+            </div>
+            <p className="muted small" style={{ margin: 0 }}>Sold by {best.seller.name}</p>
+            {best.old_price && <p className="save" style={{ margin: '6px 0 0' }}>You save {formatPrice(best.old_price - best.price)}</p>}
+            <button className="btn btn-block" onClick={() => add(best)}>
+              {added === best.id ? 'Added to cart ✓' : 'Add to cart'}
+            </button>
+            <button className="btn btn-block btn-outline" onClick={() => buyNow(best)}>Buy now</button>
+            {others.length > 0 && (
+              <a href="#offers" className="more-offers">
+                + {others.length} more {others.length === 1 ? 'offer' : 'offers'} from {formatPrice(others[0].price)}
+              </a>
+            )}
+            <ul>
+              <li>Your key is shown right after payment</li>
+              <li>Compare {product.offers.length} {product.offers.length === 1 ? 'seller' : 'sellers'} below</li>
+              <li>Payment is simulated, no real money</li>
+            </ul>
+          </aside>
+        )}
+      </div>
     </div>
   )
 }

@@ -25,14 +25,15 @@ REST + JSON. This file is the contract: backend and frontend are both built agai
   "region": "Global",
   "genre": "Racing",
   "cover_color": "#4618AC",
+  "best_offer_id": 10,
   "price": 1999,
   "old_price": 2999,
   "discount_percent": 33,
   "offers_count": 4
 }
 ```
-`price` is the cheapest in-stock offer; `old_price` and `discount_percent` come from that offer (both `null` if no discount).
-Products with no in-stock offer have `price: null`.
+`price` is the cheapest in-stock offer and `best_offer_id` is that offer's id (what "Add to cart" on a product card buys); `old_price` and `discount_percent` come from that offer (both `null` if no discount).
+Products with no in-stock offer have `price: null` and `best_offer_id: null`.
 
 **Offer**
 ```json
