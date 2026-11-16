@@ -57,6 +57,7 @@
   --nav-row: 50px;          /* full-width navigation row */
   --search-h: 55px;
   --search-w: 530px;
+  --cart-icon: 24px;        /* header cart */
   --search-icon: 24px;      /* magnifier */
   --search-clear-icon: 14px;/* clear-text cross */
   --search-pad-left: 48px;  /* room for the magnifier */
@@ -208,6 +209,7 @@ label { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; fo
 .currency { color: var(--muted); font-weight: 800; }
 .icon-link { position: relative; display: grid; place-items: center; width: 40px; height: 40px; }
 .icon-link:hover { text-decoration: none; color: var(--yellow); }
+.cart-icon { width: var(--cart-icon); height: var(--cart-icon); }
 .badge { position: absolute; top: 0; right: -2px; background: var(--red); color: #fff; border-radius: 999px; min-width: 18px; padding: 0 5px; text-align: center; font-size: 11px; font-weight: 800; line-height: 18px; }
 .account { display: flex; align-items: center; }
 .account > * + * { margin-left: 12px; padding-left: 12px; border-left: 1px solid var(--text-3); line-height: 1; }
