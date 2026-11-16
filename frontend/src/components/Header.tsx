@@ -1,9 +1,10 @@
-import { useRef, useState, type FormEvent } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useFetch } from '../api'
 import { useAuth } from '../auth'
 import { useCart } from '../cart'
 import type { Filters } from '../types'
+import Icon from './Icon'
 
 /** Thin-line magnifier, drawn for this project; its size comes from --search-icon. */
 function SearchIcon() {
@@ -54,6 +55,19 @@ export default function Header() {
   const [params] = useSearchParams()
   const [term, setTerm] = useState(params.get('q') ?? '')
   const inputRef = useRef<HTMLInputElement>(null)
+  const location = useLocation()
+  // Phones: the category list is closed until the "Categories" button is pressed. It remembers the page it was opened
+  // on (location.key), so it closes by itself as soon as the visitor goes anywhere.
+  const [openAt, setOpenAt] = useState<string | null>(null)
+  const navOpen = openAt === location.key
+  useEffect(() => {
+    if (!navOpen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpenAt(null)
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [navOpen])
   // The platform links of the second row come from the API, so they always match the catalog.
   const filters = useFetch<Filters>('/filters')
 
@@ -133,16 +147,29 @@ export default function Header() {
       </div>
 
       <div className="subnav">
-        {/* A navigation landmark; on phones it is a swipeable strip (see the mobile rules in index.css) */}
-        <nav className="container subnav-inner" aria-label="Browse the store">
-          <Link to="/store">All games</Link>
-          <Link to="/store?sort=popularity">Best sellers</Link>
-          <Link to="/store?sort=discount">Hot deals</Link>
-          <Link to="/store?sort=price_asc">Cheap games</Link>
-          {filters.data?.platforms.map((p) => (
-            <Link key={p} to={`/store?platform=${encodeURIComponent(p)}`}>{p}</Link>
-          ))}
-        </nav>
+        <div className="container subnav-inner">
+          {/* Phones: one button opens the list of links (the "disclosure" pattern); wider screens show the links in a row */}
+          <button
+            type="button"
+            className="subnav-toggle"
+            aria-expanded={navOpen}
+            aria-controls="store-nav"
+            onClick={() => setOpenAt(navOpen ? null : location.key)}
+          >
+            <span className="subnav-toggle-icon"><Icon name="menu" /></span>
+            <span>Categories</span>
+            <span className={`chevron${navOpen ? ' up' : ''}`} aria-hidden="true" />
+          </button>
+          <nav id="store-nav" className={`subnav-links${navOpen ? ' open' : ''}`} aria-label="Browse the store">
+            <Link to="/store">All games</Link>
+            <Link to="/store?sort=popularity">Best sellers</Link>
+            <Link to="/store?sort=discount">Hot deals</Link>
+            <Link to="/store?sort=price_asc">Cheap games</Link>
+            {filters.data?.platforms.map((p) => (
+              <Link key={p} to={`/store?platform=${encodeURIComponent(p)}`}>{p}</Link>
+            ))}
+          </nav>
+        </div>
       </div>
     </header>
   )
