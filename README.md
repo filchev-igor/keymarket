@@ -112,7 +112,6 @@ Deliberately **not** tested, and why:
 - **TanStack Query** for server data: caching, request de-duplication and retries, replacing the small hand-written `useFetch` hook.
 - **Laravel Pint** to keep the PHP code style consistent automatically.
 - **GitHub Actions CI** that runs the backend tests, the frontend type-check and the production build on every pull request.
-- **A search suggestions dropdown** under the header search box, on top of the existing typo-tolerant search.
 
 ## Process
 
