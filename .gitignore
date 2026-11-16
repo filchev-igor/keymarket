@@ -23,6 +23,9 @@ backend/storage/*.key
 backend/storage/logs/
 backend/bootstrap/cache/*.php
 
+# Third-party design references (screenshots, measurements): never committed
+design/
+
 # Logs, exports, OS files
 *.log
 export/

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../api'
 import { useCart } from '../cart'
+import { Cover } from '../components/ProductCard'
+import Stepper from '../components/Stepper'
 import { formatPrice } from '../format'
 import type { CartPreview } from '../types'
 
@@ -38,9 +40,12 @@ export default function Cart() {
   if (cart.items.length === 0) {
     return (
       <div className="container">
-        <h1>Your cart</h1>
-        <p>Your cart is empty.</p>
-        <Link to="/store" className="btn">Browse games</Link>
+        <Stepper step={1} />
+        <div className="panel">
+          <h1>My cart</h1>
+          <p>Your cart is empty.</p>
+          <Link to="/store" className="btn">Browse games</Link>
+        </div>
       </div>
     )
   }
@@ -48,47 +53,62 @@ export default function Cart() {
   const hasUnavailable = preview?.items.some((l) => !l.available) ?? false
 
   return (
-    <div className="container stack">
-      <h1>Your cart</h1>
+    <div className="container">
+      <Stepper step={1} />
       {error && <p className="error">{error}</p>}
       {!preview && !error && <p className="muted">Loading prices...</p>}
 
       {preview && (
-        <>
-          <div className="cart-lines">
-            {preview.items.map((line) => (
-              <div key={line.offer_id} className={`cart-line ${line.available ? '' : 'unavailable'}`}>
-                <div>
-                  {line.product ? (
-                    <Link to={`/product/${line.product.slug}`}><strong>{line.product.name}</strong></Link>
-                  ) : (
-                    <strong>Offer no longer exists</strong>
-                  )}
-                  {line.product && <p className="muted">{line.product.platform} · {line.product.region} · sold by {line.seller?.name}</p>}
-                  {!line.available && <p className="error">Not enough stock. Lower the quantity or remove it.</p>}
+        <div className="two-col">
+          <section className="panel">
+            <h1>My cart</h1>
+            <div className="cart-lines">
+              {preview.items.map((line) => (
+                <div key={line.offer_id} className={`cart-line${line.available ? '' : ' unavailable'}`}>
+                  {line.product ? <Cover name={line.product.name} color={line.product.cover_color} thumb /> : <span />}
+                  <div>
+                    {line.product ? (
+                      <Link to={`/product/${line.product.slug}`}><strong>{line.product.name}</strong></Link>
+                    ) : (
+                      <strong>Offer no longer exists</strong>
+                    )}
+                    {line.product && (
+                      <p className="muted small" style={{ margin: '4px 0 0' }}>
+                        {line.product.platform} · {line.product.region} · sold by {line.seller?.name}
+                      </p>
+                    )}
+                    {!line.available && <p className="error small">Not enough stock. Lower the quantity or remove it.</p>}
+                  </div>
+                  <div className="qty" role="group" aria-label="Quantity">
+                    <button onClick={() => cart.setQuantity(line.offer_id, line.quantity - 1)} disabled={line.quantity <= 1} aria-label="Decrease quantity">−</button>
+                    <span>{line.quantity}</span>
+                    <button onClick={() => cart.setQuantity(line.offer_id, line.quantity + 1)} disabled={line.quantity >= 10} aria-label="Increase quantity">+</button>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <strong>{line.unit_price === null ? '-' : formatPrice(line.line_total)}</strong>
+                    <div><button className="link-button" onClick={() => cart.remove(line.offer_id)}>Remove</button></div>
+                  </div>
                 </div>
-                <input
-                  type="number"
-                  min={1}
-                  max={10}
-                  value={line.quantity}
-                  onChange={(e) => cart.setQuantity(line.offer_id, Number(e.target.value))}
-                  aria-label="Quantity"
-                />
-                <strong>{line.unit_price === null ? '-' : formatPrice(line.line_total)}</strong>
-                <button className="link-button" onClick={() => cart.remove(line.offer_id)}>Remove</button>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </section>
 
-          <div className="summary">
-            <p>Total: <strong className="price big">{formatPrice(preview.total)}</strong></p>
-            <button className="btn" disabled={hasUnavailable || preview.total === 0} onClick={() => navigate('/checkout')}>
-              Proceed to checkout
+          <aside className="panel" aria-label="Summary">
+            <h2>Summary</h2>
+            <button className="btn btn-block" disabled={hasUnavailable || preview.total === 0} onClick={() => navigate('/checkout')}>
+              Go to checkout
             </button>
-            <p className="muted">You will be asked to sign in before paying.</p>
-          </div>
-        </>
+            <div className="summary-row" style={{ marginTop: 16 }}>
+              <span>{cart.count} {cart.count === 1 ? 'item' : 'items'}</span>
+              <span>{formatPrice(preview.total)}</span>
+            </div>
+            <div className="summary-total">
+              <span>Total</span>
+              <span className="price big">{formatPrice(preview.total)}</span>
+            </div>
+            <p className="muted small">You will be asked to sign in before paying.</p>
+          </aside>
+        </div>
       )}
     </div>
   )

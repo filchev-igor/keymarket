@@ -1,4 +1,5 @@
 import { Link, Route, Routes } from 'react-router-dom'
+import Footer from './components/Footer'
 import Header from './components/Header'
 import RequireAuth from './components/RequireAuth'
 import AuthForm from './pages/AuthForm'
@@ -26,12 +27,7 @@ export default function App() {
         <Route path="/orders/:id" element={<RequireAuth><OrderDetail /></RequireAuth>} />
         <Route path="*" element={<div className="container"><h1>Page not found</h1><Link to="/">Go home</Link></div>} />
       </Routes>
-      <footer className="footer">
-        <div className="container">
-          Demo project. Games, sellers and keys are fictional, and any resemblance to real products is coincidental.
-          Not affiliated with any game platform or store. Payments are simulated. Please do not enter real personal data.
-        </div>
-      </footer>
+      <Footer />
     </>
   )
 }
