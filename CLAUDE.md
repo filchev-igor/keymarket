@@ -31,6 +31,7 @@ If time runs short, cut styling polish and extras first. Never cut the purchase 
 - When the work in the branch is done, push it and open a pull request into `main` with `gh pr create`. The PR title is `K-N: <meaningful description of what was done>` and the body is a short summary (what was done, what was deliberately simplified).
 - Before merging, tell me the PR is ready and wait for my quick OK. Then merge with `gh pr merge <number> --squash` (Squash and merge: one commit on `main`). Never use `--delete-branch`: the branches and their commits must stay visible. Then `git checkout main`, `git pull`, and create the next branch from the updated `main`.
 - Git authentication over SSH works without prompts and `gh` is logged in. If a git or gh command asks for credentials or fails to authenticate, stop and tell me. Never ask me to paste passwords or tokens into the chat.
+- Branch numbering is automatic: before creating a branch, run git fetch --all, list the remote branches that match K-<n>-*, take the highest n and use n+1. The PR title uses the same number (K-<n>: ...). Never reuse a number.
 
 ## What never goes into git
 - Never commit `.idea/`, `.vscode/`, `.claude/`, `export/`, `node_modules/`, `vendor/`, `dist/`, or any real `.env` file. Only `.env.example` files with variable names are allowed.
