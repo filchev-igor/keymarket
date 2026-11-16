@@ -71,6 +71,8 @@
   --search-pad-left: 48px;  /* room for the magnifier */
   --search-clear-w: 44px;   /* room for the clear button */
   --sidebar-w: 220px;
+  --filter-head-h: 55px;    /* title row of a filter group */
+  --filter-pad-b: 15px;     /* space under a filter group's content */
   --btn-h: 35px;
   --btn-h-lg: 40px;
   --field-h: 40px;
@@ -94,6 +96,7 @@
   --font: 'Montserrat Variable', 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
   --font-ui: 'Montserrat Variable', Arial, Helvetica, sans-serif; /* the reference stack; Montserrat stands in for Metropolis */
   --fs-account: 14px;         /* Log in / Register / Sign out */
+  --fs-filter: 16px;          /* filter sidebar text and group titles */
   --fs-title: 30px;   /* page title, 30/700 on desktop (24 on phones) */
   --fs-section: 20px; /* 20/800 section heading */
   --fs-panel: 15px;   /* body text and panel titles */
@@ -329,14 +332,18 @@ label { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; fo
 /* ---------- Store ---------- */
 .store { display: grid; grid-template-columns: var(--sidebar-w) minmax(0, 1fr); gap: 28px; align-items: start; }
 /* Desktop sidebar: no solid panel, just separate collapsible groups divided by thin lines */
-.filters { position: sticky; top: var(--gap); }
-.filters-head { display: flex; align-items: center; justify-content: space-between; padding: 0 0 12px; font-size: var(--fs-panel); font-weight: 800; }
-.filter-group { border-top: 1px solid var(--divider); }
-.filter-group summary { display: flex; justify-content: space-between; align-items: center; height: 48px; font-size: var(--fs-panel); font-weight: 800; cursor: pointer; list-style: none; }
+/* Filter sidebar: a transparent 220px column of white 16px text (no margin, padding or border); every group is its own
+   #5825CC block, stacked edge to edge, with a 55px title row and 20px side padding */
+.filters { position: sticky; top: var(--gap); margin: 0; padding: 0; border: 0; background: transparent; color: var(--text); font-family: var(--font-ui); font-size: var(--fs-filter); }
+.filters-head { display: flex; align-items: center; justify-content: space-between; padding: 0 0 12px; font-size: var(--fs-filter); font-weight: 800; }
+.filter-group { display: block; background: var(--panel); border-top: 1px solid var(--divider); padding-bottom: var(--filter-pad-b); }
+.filter-group:first-of-type { border-top: 0; }
+.filter-group > :not(summary) { margin-inline: 20px; }
+.filter-group summary { display: flex; justify-content: space-between; align-items: center; height: var(--filter-head-h); padding: 0 20px; font-size: var(--fs-filter); font-weight: 800; cursor: pointer; list-style: none; }
 .filter-group summary::-webkit-details-marker { display: none; }
 .filter-group summary::after { content: '⌃'; font-size: 14px; transition: transform 0.15s; }
 .filter-group:not([open]) summary::after { transform: rotate(180deg); }
-.filter-options { display: flex; flex-direction: column; align-items: flex-start; padding-bottom: 14px; }
+.filter-options { display: flex; flex-direction: column; align-items: flex-start; }
 /* "N more" / "Show less" link with a small chevron */
 .show-more { display: inline-flex; align-items: center; padding: 6px 0 0; }
 .chevron { display: inline-block; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); margin: -3px 0 0 8px; }
@@ -355,7 +362,7 @@ label { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; fo
 .checkbox { width: 18px; height: 18px; border: 2px solid var(--muted); border-radius: 0; flex-shrink: 0; display: grid; place-items: center; font-size: 12px; line-height: 1; color: var(--on-yellow); }
 .option.selected .checkbox { background: var(--yellow); border-color: var(--yellow); }
 .option.selected .checkbox::after { content: '✓'; font-weight: 800; }
-.price-filter { padding-bottom: 16px; display: flex; flex-direction: column; gap: 10px; }
+.price-filter { display: flex; flex-direction: column; gap: 10px; }
 .price-filter .range { display: flex; align-items: center; gap: 8px; }
 .price-filter input { padding: 0 0 0 20px; color: var(--muted); font-size: 16px; font-weight: 600; }
 .filters-toggle { display: none; }
@@ -469,8 +476,9 @@ a.cart-line:hover { text-decoration: none; outline: 1px solid var(--teal); }
   .store { grid-template-columns: minmax(0, 1fr); }
   /* On phones the sidebar becomes a drawer: a solid panel opened by the Filters button */
   .filters { position: static; display: none; }
-  .filters.open { display: block; background: var(--panel); box-shadow: var(--shadow-panel); padding: 0 20px 6px; }
-  .filters.open .filters-head { height: 55px; padding: 0; }
+  /* the same stacked group blocks, opened by the Filters button */
+  .filters.open { display: block; }
+  .filters.open .filters-head { height: var(--filter-head-h); padding: 0 20px; background: var(--panel); }
   .filters-toggle { display: inline-flex; margin-bottom: 14px; }
   .banners { grid-template-columns: 1fr; }
   .banner:first-child { grid-row: auto; min-height: 180px; }
