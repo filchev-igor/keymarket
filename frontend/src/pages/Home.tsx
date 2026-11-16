@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useFetch } from '../api'
-import CategoryIcon, { type IconName } from '../components/CategoryIcon'
+import Icon, { platformIcon } from '../components/Icon'
 import ProductCard from '../components/ProductCard'
 import Status from '../components/Status'
 import type { Banner, Filters, Product } from '../types'
@@ -22,32 +22,26 @@ function Banners() {
   )
 }
 
-/** Which of our own icons stands for a platform (generic shapes, not the platforms' logos). */
-function platformIcon(platform: string): IconName {
-  if (/steam|epic|pc/i.test(platform)) return 'monitor'
-  if (/nintendo/i.test(platform)) return 'handheld'
-  return 'gamepad'
+// Display order of the platform entries; a platform that is not listed here still shows up, after these.
+const PLATFORM_ORDER = ['PlayStation', 'Xbox', 'Steam', 'Nintendo', 'Epic Games']
+
+function byPlatformOrder(a: string, b: string): number {
+  const rank = (p: string) => (PLATFORM_ORDER.includes(p) ? PLATFORM_ORDER.indexOf(p) : PLATFORM_ORDER.length)
+  return rank(a) - rank(b) || a.localeCompare(b)
 }
 
-const SHORTCUTS: { label: string; to: string; icon: IconName }[] = [
-  { label: 'All games', to: '/store', icon: 'grid' },
-  { label: 'Best sellers', to: '/store?sort=popularity', icon: 'flame' },
-  { label: 'Hot deals', to: '/store?sort=discount', icon: 'tag' },
-  { label: 'Cheap games', to: '/store?sort=price_asc', icon: 'coins' },
-]
-
-/** Horizontal category strip under the hero: a few shortcuts, then one entry per platform from the catalog. */
+/** Horizontal category strip under the hero: "Games", then one entry per platform taken from the catalog. */
 function CategoryStrip() {
   const { data } = useFetch<Filters>('/filters')
   const items = [
-    ...SHORTCUTS,
-    ...(data?.platforms ?? []).map((p) => ({ label: p, to: `/store?platform=${encodeURIComponent(p)}`, icon: platformIcon(p) })),
+    { label: 'Games', to: '/store', icon: 'grid' as const },
+    ...[...(data?.platforms ?? [])].sort(byPlatformOrder).map((p) => ({ label: p, to: `/store?platform=${encodeURIComponent(p)}`, icon: platformIcon(p) })),
   ]
   return (
     <nav className="category-strip" aria-label="Browse categories">
       {items.map((item) => (
         <Link key={item.label} to={item.to} className="category">
-          <span className="category-icon"><CategoryIcon name={item.icon} /></span>
+          <span className="category-icon"><Icon name={item.icon} /></span>
           <span>{item.label}</span>
         </Link>
       ))}

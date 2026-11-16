@@ -1,12 +1,12 @@
 /**
  * Small line icons drawn for this project (no third-party artwork or brand logos).
- * They inherit the text colour and are sized by the --category-icon variable via CSS.
+ * They inherit the text colour; the size comes from the CSS around them.
  */
-export type IconName = 'grid' | 'flame' | 'tag' | 'coins' | 'monitor' | 'gamepad' | 'handheld'
+export type IconName = 'grid' | 'flame' | 'tag' | 'coins' | 'monitor' | 'gamepad' | 'handheld' | 'globe' | 'key' | 'bolt'
 
 const common = { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true } as const
 
-export default function CategoryIcon({ name }: { name: IconName }) {
+export default function Icon({ name }: { name: IconName }) {
   switch (name) {
     case 'grid':
       return (
@@ -53,6 +53,26 @@ export default function CategoryIcon({ name }: { name: IconName }) {
           <circle cx="18.7" cy="13.2" r="1" />
         </svg>
       )
+    case 'globe':
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18" />
+        </svg>
+      )
+    case 'key':
+      return (
+        <svg {...common}>
+          <circle cx="8" cy="15" r="4" />
+          <path d="M10.8 12.2 20 3M16 7l3 3M14 9l2 2" />
+        </svg>
+      )
+    case 'bolt':
+      return (
+        <svg {...common}>
+          <path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z" />
+        </svg>
+      )
     default: // gamepad
       return (
         <svg {...common}>
@@ -63,4 +83,11 @@ export default function CategoryIcon({ name }: { name: IconName }) {
         </svg>
       )
   }
+}
+
+/** Which icon stands for a platform (generic shapes, not the platforms' logos). */
+export function platformIcon(platform: string): IconName {
+  if (/steam|epic|pc/i.test(platform)) return 'monitor'
+  if (/nintendo/i.test(platform)) return 'handheld'
+  return 'gamepad'
 }

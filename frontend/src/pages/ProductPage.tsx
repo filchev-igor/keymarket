@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useFetch } from '../api'
 import { useCart } from '../cart'
+import Icon, { platformIcon } from '../components/Icon'
 import { Cover } from '../components/ProductCard'
 import Status from '../components/Status'
 import { formatPrice } from '../format'
@@ -79,15 +80,40 @@ export default function ProductPage() {
                 <span className="chip">{product.platform}</span>
                 <span className="chip">{product.region}</span>
                 <span className="chip">{product.genre}</span>
+                {product.release_date && <span className="chip">Released {new Date(product.release_date).getFullYear()}</span>}
               </div>
               <p>{product.description}</p>
-              <dl className="facts" style={{ margin: 0 }}>
-                <div className="fact"><dt>Region</dt><dd>{product.region}</dd></div>
-                <div className="fact"><dt>Platform</dt><dd>{product.platform}</dd></div>
-                <div className="fact"><dt>Genre</dt><dd>{product.genre}</dd></div>
-                {product.release_date && <div className="fact"><dt>Released</dt><dd>{new Date(product.release_date).getFullYear()}</dd></div>}
-                <div className="fact"><dt>Delivery</dt><dd>Digital key shown right after payment</dd></div>
-              </dl>
+              {/* Four info rows: icon, bold title, muted description */}
+              <ul className="info-rows">
+                <li className="info-row">
+                  <span className="info-icon"><Icon name="globe" /></span>
+                  <div>
+                    <strong>{product.region}</strong>
+                    <p>{product.region === 'Global' ? 'Can be activated in any region.' : `Meant for the ${product.region} region. Make sure it matches your account before buying.`}</p>
+                  </div>
+                </li>
+                <li className="info-row">
+                  <span className="info-icon"><Icon name={platformIcon(product.platform)} /></span>
+                  <div>
+                    <strong>{product.platform}</strong>
+                    <p>Redeem it on {product.platform}.</p>
+                  </div>
+                </li>
+                <li className="info-row">
+                  <span className="info-icon"><Icon name="key" /></span>
+                  <div>
+                    <strong>Activation key</strong>
+                    <p>This is a digital key, not a disc. It is shown on your order page once payment is complete.</p>
+                  </div>
+                </li>
+                <li className="info-row">
+                  <span className="info-icon"><Icon name="bolt" /></span>
+                  <div>
+                    <strong>Instant delivery</strong>
+                    <p>No waiting: your key appears right after the (simulated) payment.</p>
+                  </div>
+                </li>
+              </ul>
             </div>
           </div>
 

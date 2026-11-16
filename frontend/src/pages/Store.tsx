@@ -1,6 +1,7 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useFetch } from '../api'
+import { formatPrice } from '../format'
 import ProductCard from '../components/ProductCard'
 import Status from '../components/Status'
 import type { Filters, Paginated, Product } from '../types'
@@ -115,10 +116,25 @@ export default function Store() {
     setParams(q ? { q } : {})
   }
 
-  const active: [string, string, string][] = [] // [param, label, value]
+  // Selected filters, shown as removable pills above the grid ("Platform: Steam ✕").
+  const active: { label: string; value: string; params: string[] }[] = []
   for (const [name, label] of [['platform', 'Platform'], ['region', 'Region'], ['genre', 'Genre']] as const) {
     const v = params.get(name)
-    if (v) active.push([name, label, v])
+    if (v) active.push({ label, value: v, params: [name] })
+  }
+  const minPrice = params.get('min_price')
+  const maxPrice = params.get('max_price')
+  if (minPrice || maxPrice) {
+    const value = minPrice && maxPrice ? `${formatPrice(Number(minPrice))} - ${formatPrice(Number(maxPrice))}` : minPrice ? `from ${formatPrice(Number(minPrice))}` : `up to ${formatPrice(Number(maxPrice))}`
+    active.push({ label: 'Price', value, params: ['min_price', 'max_price'] })
+  }
+
+  function removeFilter(names: string[]) {
+    if (names.includes('min_price')) {
+      setMin('')
+      setMax('')
+    }
+    update(Object.fromEntries(names.map((n) => [n, ''])))
   }
 
   const optionList = (name: string, options: string[] = []) => (
@@ -164,15 +180,18 @@ export default function Store() {
         </aside>
 
         <main>
-          <div className="results-bar">
-            <div className="active-filters" style={{ margin: 0 }}>
-              {active.map(([name, label, value]) => (
-                <button key={name} className="pill" onClick={() => update({ [name]: '' })} aria-label={`Remove ${label} filter ${value}`}>
-                  {value} ✕
+          {active.length > 0 && (
+            <div className="filter-pills">
+              {active.map((f) => (
+                <button key={f.label} className="pill" onClick={() => removeFilter(f.params)} aria-label={`Remove ${f.label} filter ${f.value}`}>
+                  {f.label}: {f.value} ✕
                 </button>
               ))}
-              {meta && <span className="muted small">{meta.total} products</span>}
+              <button className="link-button clear-all" onClick={clearAll}>Clear all</button>
             </div>
+          )}
+          <div className="results-bar">
+            <span className="results-found">{meta ? `Results found: ${meta.total}` : ''}</span>
             <label className="sort">
               <SortIcon />
               <select aria-label="Sort by" value={params.get('sort') ?? ''} onChange={(e) => update({ sort: e.target.value })}>
