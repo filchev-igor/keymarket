@@ -14,6 +14,7 @@ export interface Product {
   region: string
   genre: string
   cover_color: string
+  best_offer_id: number | null // the cheapest in-stock offer: what "Add to cart" on a card buys
   price: number | null
   old_price: number | null
   discount_percent: number | null

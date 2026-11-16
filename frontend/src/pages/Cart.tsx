@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../api'
 import { useCart } from '../cart'
 import { Cover } from '../components/ProductCard'
+import Spinner from '../components/Spinner'
 import Stepper from '../components/Stepper'
 import { formatPrice } from '../format'
 import type { CartPreview } from '../types'
@@ -56,7 +57,7 @@ export default function Cart() {
     <div className="container">
       <Stepper step={1} />
       {error && <p className="error">{error}</p>}
-      {!preview && !error && <p className="muted">Loading prices...</p>}
+      {!preview && !error && <Spinner centered label="Loading prices" />}
 
       {preview && (
         <div className="two-col">
@@ -67,6 +68,7 @@ export default function Cart() {
                 <div key={line.offer_id} className={`cart-line${line.available ? '' : ' unavailable'}`}>
                   {line.product ? <Cover name={line.product.name} color={line.product.cover_color} thumb /> : <span />}
                   <div>
+                    {line.seller && <p className="seller-line">Sold by <strong>{line.seller.name}</strong></p>}
                     {line.product ? (
                       <Link to={`/product/${line.product.slug}`}><strong>{line.product.name}</strong></Link>
                     ) : (
@@ -74,7 +76,7 @@ export default function Cart() {
                     )}
                     {line.product && (
                       <p className="muted small" style={{ margin: '4px 0 0' }}>
-                        {line.product.platform} · {line.product.region} · sold by {line.seller?.name}
+                        Digital key · {line.product.platform} · {line.product.region}
                       </p>
                     )}
                     {!line.available && <p className="error small">Not enough stock. Lower the quantity or remove it.</p>}

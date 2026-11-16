@@ -91,7 +91,7 @@ export default function ProductPage() {
             </div>
           </div>
 
-          <section className="offers-panel">
+          <section className="offers-panel" id="offers">
             {product.offers.length === 0 ? (
               <>
                 <h2 className="subhead">Offers</h2>
@@ -126,6 +126,11 @@ export default function ProductPage() {
               {added === best.id ? 'Added to cart ✓' : 'Add to cart'}
             </button>
             <button className="btn btn-block btn-outline" onClick={() => buyNow(best)}>Buy now</button>
+            {others.length > 0 && (
+              <a href="#offers" className="more-offers">
+                + {others.length} more {others.length === 1 ? 'offer' : 'offers'} from {formatPrice(others[0].price)}
+              </a>
+            )}
             <ul>
               <li>Your key is shown right after payment</li>
               <li>Compare {product.offers.length} {product.offers.length === 1 ? 'seller' : 'sellers'} below</li>

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Banner;
+use App\Models\Offer;
 use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Concerns\BuildsMarketplace;
@@ -25,12 +26,14 @@ class CatalogTest extends TestCase
 
     private Product $soldOut; // Steam / Global / Strategy, no keys left
 
+    private Offer $cyberBestOffer; // the 3999 offer: the cheapest one that is in stock
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->cyber = $this->makeProduct(['name' => 'Cyber Drift 2077', 'platform' => 'Steam', 'region' => 'Europe', 'genre' => 'Racing', 'units_sold' => 300]);
-        $this->makeOffer($this->cyber, 3999, keys: 3, oldPrice: 5999);
+        $this->cyberBestOffer = $this->makeOffer($this->cyber, 3999, keys: 3, oldPrice: 5999);
         $this->makeOffer($this->cyber, 4500, keys: 2);
         $this->makeOffer($this->cyber, 3000, keys: 0); // cheapest, but no stock: must be ignored everywhere
 
@@ -64,6 +67,23 @@ class CatalogTest extends TestCase
         $this->assertNull($byName['Dragon Keep Legends']['discount_percent']);
         $this->assertNull($byName['Sold Out Saga']['price'], 'a product with no stock is listed but has no price');
         $this->assertSame(0, $byName['Sold Out Saga']['offers_count']);
+    }
+
+    public function test_each_product_exposes_the_id_of_its_cheapest_in_stock_offer(): void
+    {
+        $byName = collect($this->getJson('/api/products')->assertOk()->json('data'))->keyBy('name');
+
+        // The 3000 offer is cheaper but has no keys, so the best offer is the 3999 one.
+        $this->assertSame($this->cyberBestOffer->id, $byName['Cyber Drift 2077']['best_offer_id']);
+        $this->assertNull($byName['Sold Out Saga']['best_offer_id'], 'nothing in stock, nothing to add to the cart');
+
+        // "Add to cart" on a card must buy exactly that offer: it is priced and available in the cart.
+        $this->postJson('/api/cart/preview', ['items' => [['offer_id' => $byName['Cyber Drift 2077']['best_offer_id'], 'quantity' => 1]]])
+            ->assertOk()->assertJsonPath('items.0.available', true)->assertJsonPath('items.0.unit_price', 3999);
+
+        // The product page and the homepage blocks carry the same field.
+        $this->getJson('/api/products/'.$this->cyber->slug)->assertJsonPath('data.best_offer_id', $this->cyberBestOffer->id);
+        $this->getJson('/api/home/deals')->assertJsonPath('data.0.best_offer_id', $this->cyberBestOffer->id);
     }
 
     public function test_it_filters_by_platform_region_and_genre(): void
