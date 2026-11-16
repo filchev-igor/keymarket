@@ -7,6 +7,9 @@ RUN apt-get update \
     && docker-php-ext-install pdo_pgsql zip \
     && rm -rf /var/lib/apt/lists/*
 
+# Don't advertise the PHP version in an X-Powered-By response header.
+RUN echo "expose_php=Off" > /usr/local/etc/php/conf.d/zz-hardening.ini
+
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
