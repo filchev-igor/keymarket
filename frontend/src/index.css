@@ -13,6 +13,7 @@
   --pill: #2c0e6c;          /* sort and filter pills */
   --chip: rgba(0, 0, 0, 0.3);
   --overlay: rgba(0, 0, 0, 0.55); /* platform strip on cards */
+  --hover-scrim: rgba(0, 0, 0, 0.72); /* dark layer over a whole card while its hover actions show */
   --nav-bg: rgba(0, 0, 0, 0.25);  /* full-width navigation row */
   --field-bg: rgba(0, 0, 0, 0.2); /* inputs */
   --field-shadow: inset 0 1px 3px #1f0a4d;
@@ -78,6 +79,7 @@
   --field-h: 40px;
   --card-w: 223px;          /* product card width: 5 per row inside the container */
   --card-gap: 20px;         /* 5 cards of about 223px fill the 1200px content width */
+  --card-pad: 12px;         /* padding inside a card (hover actions) */
   --cover-ratio: 4 / 5;     /* generated cover shape: gives cards about 458px height */
   --section-gap: 40px;      /* space between homepage sections (and under each "Show all") */
   --heading-gap: 30px;      /* space under homepage section headings */
@@ -271,12 +273,12 @@ label { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; fo
 /* ---------- Product cards ---------- */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--card-w), 1fr)); gap: var(--card-gap); }
 /* Home rows: exactly 5 cards across the container on desktop, scrolling sideways when narrower */
-.row-scroll { display: grid; grid-auto-flow: column; grid-auto-columns: max(var(--card-w), calc((100% - 4 * var(--card-gap)) / 5)); gap: var(--card-gap); overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: thin; padding-bottom: 96px; margin-bottom: -88px; /* room for the hover panel */ }
+.row-scroll { display: grid; grid-auto-flow: column; grid-auto-columns: max(var(--card-w), calc((100% - 4 * var(--card-gap)) / 5)); gap: var(--card-gap); overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: thin; padding-bottom: 8px; }
 .row-scroll > * { scroll-snap-align: start; }
 
 /* Square card, no border; a 1px teal border appears on hover. The cover and title are one link. */
 .card { position: relative; background: var(--card); border-radius: var(--radius-card); display: flex; flex-direction: column; }
-.card:hover, .card:focus-within { outline: 1px solid var(--teal); outline-offset: -1px; z-index: 5; }
+.card:hover, .card:focus-within { outline: 1px solid var(--teal); outline-offset: -1px; }
 .card-link { display: flex; flex-direction: column; flex: 1; color: inherit; }
 .card-link:hover { text-decoration: none; }
 .card-media { position: relative; overflow: hidden; }
@@ -296,12 +298,17 @@ label { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; fo
 .old-price { color: var(--muted); text-decoration: line-through; font-size: var(--fs-ui); font-weight: 600; }
 .save { color: var(--green); font-size: var(--fs-small); font-weight: 800; }
 
-/* Hover panel under the card (mouse and keyboard only): a yellow Add to cart button and a View offers link.
-   It overlays whatever is below instead of moving the layout, like the reference. */
-.card-hover { display: none; position: absolute; left: 0; right: 0; top: 100%; z-index: 6; background: var(--card); padding: 4px 12px 12px; flex-direction: column; gap: 10px; border: 1px solid var(--teal); border-top: 0; box-shadow: var(--shadow-panel); }
+/* Hover actions (mouse and keyboard only), built like the "image text blocks" pattern: the card is the positioned
+   container (position: relative), .card-hover is a dark layer over the WHOLE card (image and all its text sit under
+   it, shadowed), and .card-hover-content is the block centered on it with top/left 50% and translate(-50%, -50%).
+   The layer is exactly the card's size, so nothing around the card is covered and the layout never moves. Clicks pass
+   through the layer to the card link underneath; only the button and the link catch them. */
+.card-hover { display: none; position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: var(--hover-scrim); pointer-events: none; }
+.card-hover-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: calc(100% - 2 * var(--card-pad)); display: flex; flex-direction: column; gap: 12px; text-align: center; }
+.card-hover-content > * { pointer-events: auto; }
 .view-offers { color: var(--link); font-size: var(--fs-ui); font-weight: 800; text-align: center; }
 @media (hover: hover) {
-  .card:hover .card-hover, .card:focus-within .card-hover { display: flex; }
+  .card:hover .card-hover, .card:focus-within .card-hover { display: block; }
 }
 
 /* Loading indicator (see components/Spinner.tsx): one rotation per second, linear, forever */
