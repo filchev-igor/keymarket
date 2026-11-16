@@ -62,6 +62,8 @@
   --account-icon: 24px;     /* person icon before "Log in" */
   --account-icon-gap: 8px;  /* between that icon and its label */
   --account-gap: 10px;      /* around the "|" separator */
+  --badge-size: 20px;       /* count badge next to a filter group title */
+  --filter-search-icon: 18px; /* magnifier in a filter's search box */
   --sort-icon: 20px;        /* store sort control icon */
   --sort-gap: 10px;         /* space between the sort icon, its label and the chevron */
   --search-icon: 24px;      /* magnifier */
@@ -326,7 +328,19 @@ label { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; fo
 .filter-group summary::after { content: '⌃'; font-size: 14px; transition: transform 0.15s; }
 .filter-group:not([open]) summary::after { transform: rotate(180deg); }
 .filter-options { display: flex; flex-direction: column; align-items: flex-start; padding-bottom: 14px; }
-.show-more { padding: 6px 0 0; }
+/* "N more" / "Show less" link with a small chevron */
+.show-more { display: inline-flex; align-items: center; padding: 6px 0 0; }
+.chevron { display: inline-block; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); margin: -3px 0 0 8px; }
+.chevron.up { transform: rotate(-135deg); margin-top: 4px; }
+/* Filter group title: the text plus a yellow count badge when something is selected */
+.group-title { display: inline-flex; align-items: center; gap: 10px; }
+.group-badge { display: inline-grid; place-items: center; min-width: var(--badge-size); height: var(--badge-size); padding: 0 6px; border-radius: 999px; background: var(--yellow); color: var(--on-yellow); font-size: var(--fs-small); font-weight: 800; line-height: 1; }
+/* Small search box inside a long option list */
+.filter-search { position: relative; margin-bottom: 10px; }
+.filter-search input { padding-left: 38px; font-size: var(--fs-ui); }
+.filter-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: var(--filter-search-icon); height: var(--filter-search-icon); color: var(--muted); pointer-events: none; }
+.filter-search-icon svg { width: 100%; height: 100%; }
+.price-filter strong { color: var(--muted); font-weight: 800; }
 .option { display: flex; align-items: center; gap: 12px; background: none; border: 0; color: var(--text); font: inherit; font-size: var(--fs-ui); font-weight: 600; text-align: left; padding: 7px 0; cursor: pointer; }
 .option:hover { color: var(--yellow); }
 .checkbox { width: 18px; height: 18px; border: 2px solid var(--muted); border-radius: 0; flex-shrink: 0; display: grid; place-items: center; font-size: 12px; line-height: 1; color: var(--on-yellow); }
