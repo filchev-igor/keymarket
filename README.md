@@ -72,6 +72,31 @@ cp .env.example .env          # VITE_API_URL=http://localhost:8000
 npm run dev                   # http://localhost:5173
 ```
 
+## Tests
+
+```bash
+cd backend
+cp .env.testing.example .env.testing   # fill in a SEPARATE Postgres database (a second free Supabase project works)
+php artisan test
+```
+
+65 backend tests (Laravel feature tests plus unit tests of the safety guard). They run on **Postgres, not SQLite**, because search uses `pg_trgm` and checkout uses `FOR UPDATE SKIP LOCKED`.
+
+**Safety:** the feature tests use `RefreshDatabase`, which wipes the database it runs on. `tests/Support/ProductionDatabaseGuard.php` runs before any test touches a database and refuses to start if `.env.testing` is missing (Laravel would silently fall back to the production `.env`), if the test database is the same Supabase project as the one in `backend/.env` (compared by project ref, because two projects in one region share a pooler host), or if SQLite or `DB_URL` is used. The guard has its own tests, and I checked it by pointing the environment at the production identity and by hiding `.env.testing`: both runs were refused before any database access.
+
+What is covered:
+- **Auth:** register (with validation and hashed password), sign in, wrong credentials, `me`, logout revokes the token, protected routes reject guests and invalid tokens.
+- **Catalog:** filters (platform, region, genre, price on the cheapest in-stock offer), sorting, pagination, validation, name search including typos and partial names, search combined with filters, product page (in-stock offers, cheapest first, plain 404), the three homepage blocks, filter values.
+- **Checkout:** guests cannot check out; one unique key per unit and stock update; duplicate lines merged; several offers per order; **a key is never sold twice** (including a database-level uniqueness check); a **declined card** (`...0002`, in several spellings) creates no order and sells no key; stock errors and a failing second line roll everything back; request validation; orders are private to their buyer; cart pricing.
+- A deliberate break of the decline logic makes the decline tests fail, so they do guard that behaviour.
+
+Deliberately **not** tested, and why:
+- **Frontend:** no frontend tests (out of scope for this assignment); the UI was checked by hand on the live site.
+- **Truly concurrent checkouts:** `SKIP LOCKED` only matters with two simultaneous database connections, which PHPUnit's single-connection tests cannot produce. The tests cover the sequential case and the database unique constraints that back it up.
+- **Seeder idempotency, the Docker image and the Render/Vercel deployment:** verified by hand (re-running the seeder against the real database, the live checklist in `DEPLOY.md`), not automated.
+- **CORS and the visual design.**
+- The suite takes a few minutes because every query goes to a remote database.
+
 ## Deliberately simplified
 
 - Payment is simulated; there is no payment provider and no card data is stored.
